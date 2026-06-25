@@ -57,13 +57,12 @@ mission_folder <- paste(time, height, sep="_")
 FMPATH <- file.path(point_clouds_dir, mission_folder)
 
 # Area of interest
-aoi_database <- file.path(ROOT, "data/metadata/flights_common_overlap.gpkg")
 aoi_layer <- paste0(area, "_100_40")
-AOIPATH <- file.path(aoi_database)
+AOIPATH <- file.path(ROOT, "data/metadata/flights_common_overlap.gpkg")
 
 # Ground reference path
-gr_fname <- paste0(area, "_ground_reference.gpkg")
-GRPATH <- file.path(ROOT, "data/sites", area, gr_fname)
+gr_fname <- "ground_reference_targets.gpkg"
+GRPATH <- file.path(ROOT, "data/metadata", gr_fname)
 
 # Folder to store the computed stats
 STATSPATH <- openStatsFolder(ROOT, area, time, height)
