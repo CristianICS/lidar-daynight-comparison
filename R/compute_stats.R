@@ -66,7 +66,7 @@ gr_fname <- paste0(area, "_ground_reference.gpkg")
 GRPATH <- file.path(ROOT, "data/sites", area, gr_fname)
 
 # Folder to store the computed stats
-# STATSPATH <- configStatsFolder(ROOT, area, time, height)
+STATSPATH <- openStatsFolder(ROOT, area, time, height)
 
 # Retile mission laz files
 # ------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ grid_params <- readRDS(grid_params_path)
 
 fmpath_retiled <- retileCatalog(FMPATH, grid_params, n_workers)
 
-catalogCompression(fmpath_retiled, overwrite=FALSE)
+compressLasFolder(fmpath_retiled)
 
 # Compute global statistics within the AOI region
 # ------------------------------------------------------------------------------
