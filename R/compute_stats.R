@@ -3,9 +3,9 @@ library(lidaynight)
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 5) {
+if (length(args) != 4) {
   stop(
-    "Usage: Rscript compute_stats.R <point_clouds_dir> <time> <height> <area> <chunk_size>",
+    "Usage: Rscript compute_stats.R <point_clouds_dir> <time> <height> <area>",
     "\nExample: Rscript <script>.R W/pclouds day 100 alfred",
     call. = FALSE
   )
@@ -15,7 +15,6 @@ if (length(args) != 5) {
 time <- args[[2]]
 height <- args[[3]]
 area <- args[[4]]
-chunk_size <- args[[5]]
 
 point_clouds_dir <- args[[1]]
 
@@ -54,8 +53,8 @@ n_workers <- max(1, parallel::detectCores() - 10)
 ROOT <- getwd()
 
 # Select the current flight mission path
-mission_folder <- paste(area, time, height, sep="_")
-FMPATH <- file.path(point_clouds_dir, area, mission_folder)
+mission_folder <- paste(time, height, sep="_")
+FMPATH <- file.path(point_clouds_dir, mission_folder)
 
 # Area of interest
 aoi_database <- file.path(ROOT, "data/metadata/flights_common_overlap.gpkg")
@@ -67,11 +66,14 @@ gr_fname <- paste0(area, "_ground_reference.gpkg")
 GRPATH <- file.path(ROOT, "data/sites", area, gr_fname)
 
 # Folder to store the computed stats
-STATSPATH <- configStatsFolder(ROOT, area, time, height)
+# STATSPATH <- configStatsFolder(ROOT, area, time, height)
 
 # Retile mission laz files
 # ------------------------------------------------------------------------------
-grid_params <- list("size" = chunk_size, "buffer" = 0, "alignment" = TRUE)
+grids_folder <- file.path(ROOT, "results", "grids", area, mission_folder)
+grid_params_path  <- file.path(grids_folder, "retile_chunk_params.rds")
+grid_params <- readRDS(grid_params_path)
+
 fmpath_retiled <- retileCatalog(FMPATH, grid_params, n_workers)
 
 catalogCompression(fmpath_retiled, overwrite=FALSE)

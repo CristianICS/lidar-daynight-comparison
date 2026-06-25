@@ -15,7 +15,7 @@ if (length(args) != 5) {
 time <- args[[2]]
 height <- args[[3]]
 area <- args[[4]]
-requested_size <- args[[5]]
+requested_size <- as.numeric(args[[5]])
 
 point_clouds_dir <- args[[1]]
 
@@ -49,7 +49,13 @@ if (!area %in% area_opts) {
 message(paste("Processing", area, time, height, sep=" "))
 
 # Select the current flight mission path
-mission_folder <- paste(area, time, height, sep="_")
-FMPATH <- file.path(point_clouds_dir, area, mission_folder)
+mission_folder <- paste(time, height, sep="_")
+FMPATH <- file.path(point_clouds_dir, mission_folder)
 
-checkTileGrid(FMPATH, chunk_size=requested_size)
+# Store the grid params inside the result folder
+results_folder <- file.path(getwd(), "results", "grids", area, mission_folder)
+if (!dir.exists(results_folder)) {
+  dir.create(results_folder, recursive = TRUE)
+}
+
+checkTileGrid(FMPATH, results_folder, chunk_size=requested_size)
