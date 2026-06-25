@@ -1,0 +1,288 @@
+% Version 2022-09-20
+% update – 161114 by Ken Arroyo Ohori: made spacing closer to Word template throughout, put proper quotes everywhere, removed spacing that could cause labels to be wrong, added non-breaking and inter-sentence spacing where applicable, removed explicit newlines
+% update – 010819 by Dennis Wittich: made spacing and font size closer to Word template, updated references and refernces style
+% update – 042319 by Dennis Wittich: font size of captions set to 'small', first author names are shortened, hyphenation fixed
+% update – 010620 by Dennis Wittich: Footnotes alignment set to left
+% update - 151220 by Clement Mallet: Template adapted for double blind full paper submissions
+% update - 060321 by Christian Heipke: Template refined for double blind full paper submissions
+% update - 090921 by Christian Heipke: Template refined for double blind full paper submissions
+% update - 200922 by Christian Heipke: general template update
+% update - 080124 by Christian Heipke: general template update
+
+\documentclass{isprs} % isprs class modified 23-04-2019 (Dennis Wittich)
+\usepackage{subfigure}
+\usepackage{setspace}
+\usepackage{geometry} % added 27-02-2014 Markus Englich
+\usepackage{epstopdf}
+\usepackage[labelsep=period]{caption}  % added 14-04-2016 Markus Englich - Recommendation by Sebastian Brocks
+\usepackage[british]{babel} 
+\usepackage[hang]{footmisc}
+\def\footnotemargin{1em} % added 08-01-2020 Dennis Wittich
+
+% Custom addition CI
+\usepackage{multirow}
+\usepackage{booktabs}
+
+%\usepackage[authoryear]{natbib}
+%\def\bibhang{0pt}
+
+\geometry{a4paper, top=25mm, left=20mm, right=20mm, bottom=25mm, headsep=10mm, footskip=12mm} % added 27-02-2014 Markus Englich
+%\usepackage{enumitem}
+
+%\usepackage{isprs}
+%\usepackage[perpage,para,symbol*]{footmisc}
+
+%\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\captionsetup{justification=centering,font=normal} % thanks to Niclas Borlin 05-05-2016
+\captionsetup[figure]{font=small} % added 23-04-2019 Dennis Wittich
+\captionsetup[table]{font=small} % added 23-04-2019 Dennis Wittich
+
+\begin{document}
+
+\title{Should UAV-lidar be collected at night? Impacts of Solar Illumination on Intensity, Penetration, and Ground Surface Detection Over Dense and Wet Vegetation}
+% \date{}
+
+% KAO: Remove extra spacing
+\author{
+    Iranzo, C.\textsuperscript{1},
+    Pontone, N.\textsuperscript{2},
+    Pérez-Cabello, F.\textsuperscript{1},
+    Angás, J.\textsuperscript{3},
+    Millard, K.\textsuperscript{2}
+}
+% Anonymous submissions, authors' names should not be visible
+% \author{***** (for review, names must be rendered anonymous)}
+
+% KAO: Remove extra newline
+\address{
+\textsuperscript{1 }Institute of Research into Environmental Sciences of Aragón (IUCA), Universidad de Zaragoza, C/ Pedro Cerbuna, 12, Zaragoza, 50009, Zaragoza, Spain - (c.iranzo, fcabello)@unizar.es\\
+\textsuperscript{2 }Department of Geography and Environmental Studies, Carleton University, 1125 Colonel By Drive, Ottawa, Ontario, K1S5B6, Canada - koreen\_millard@carleton.ca; NicholasPontone@cmail.carleton.ca\\
+\textsuperscript{3 }Department of Ancient Sciences and Institute of Heritage and Humanities (IPH), ARAID-University of Zaragoza, 50009 Zaragoza, Spain - j.angas@unizar.es\\
+}
+% Anonymous submissions, authors' affiliations should not be visible
+% \address{**** (for review, affiliations must be rendered anonymous)}
+
+% If the corresponding author is NOT the final author, always add a % space before the subsequent comma, i.e.
+% first author name\textsuperscript{a,}\thanks{Corresponding author} , % second author name \textsuperscript{b}, etc.
+% thanks to Niclas Borlin 05-05-2016
+% information on the corresponding author should not be used any longer and has been commented out
+% C. Heipke, Jan 03,2024
+
+% the use of the information of commissions and working groups should not be used any longer and has been commented out
+% C. Heipke, Sept. 20,2022
+%\commission{XX, }{YY} %This field is optional. If filled, XX and YY should be replaced by adequate numbers. See https://www2.isprs.org/commissions/
+%\workinggroup{XX/YY} %This field is optional.
+%\icwg{}   %This field is optional.
+
+% Reviewer 1
+% - Simplify some long sentences
+% - Provide clearer quantitative summaries of key results
+%   - Exact RMSE differences
+%   - Intensity ratios
+% - Methodology: Expand briefly on site-flight-specific dimensions and microclimate measurements
+
+% Reviewer 2
+% - Literature Context: The introduction lacks a review of existing studies concerning the role of illumination and humidity on UAV based LiDAR flights.
+% - Methodology: Expand briefly on site-specific dimensions and microclimate measurements
+% - Figure 1: The comparison to the second test site is missing, and the caption does not specify which site is displayed. Additionally, using a stacked bar chart makes a direct comparison between day and night results difficult.
+% - Figure 2: The x-axis labelling is misleading. It is unclear which specific "shrubby area" or site this plot refers to. Furthermore, please clarify the interpretation of the nighttime intensity values compared to daytime distributions.
+
+% These guidelines are provided for the preparation of \textbf{full papers} submitted to ISPRS events (Congress, Geospatial Week, Symposia, smaller events such as workshops). Full papers undergo a double-blind review process. Therefore, the submissions have to be anonymised. If this process leads to acceptance, subsequently a camera-ready manuscript must be submitted following these guidelines (but, of course, incl. author names and affiliation). Depending on the recommendations of the reviewers and the decision of the local programme chair this camera-ready manuscript will be published either in the ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences or The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, provided it arrives by the due date and corresponds to the guidelines.
+% These guidelines are issued to ensure a uniform style for all submitted papers and throughout these two series. To assure timely and efficient production of the Annals and Archives with a consistent and easy to read format, authors must submit their manuscripts in strict conformance with these guidelines. The Society may omit any paper that does not conform to the specified requirements.
+
+% KAO: Use times symbol
+\abstract{
+UAV-based lidar systems operate at low power and are sensitive to environmental conditions that affect signal strength, penetration, and classification reliability. Nighttime acquisition removes solar background noise and is often assumed to improve lidar performance, but night humidity, dew, and fog may counteract these benefits. This study evaluates the combined effects of illumination and atmospheric moisture on UAV lidar data quality in vegetation-rich peatland environments. Daytime and nighttime lidar surveys were conducted at two eastern Canadian peatlands with contrasting surface wetness: Alfred Bog (Ontario) and Quinces Bog (Nova Scotia). Flights were flown at 40, 75, and 100~m above ground level using a UAV-mounted multi-beam lidar system. Flight-time microclimate variables were recorded using nearby automated weather stations and averaged over each mission to characterize atmospheric stability and condensation potential. Data quality was assessed using return structure metrics, intensity distributions within dense shrub cover, point duplication rates, and ground surface accuracy evaluated against independent GNSS checkpoints. At the drier Quinces site, nighttime acquisition increased third-return counts by up to 50\%, increased mean intensity by approximately 20-40\%, and reduced ground surface RMSE by up to 0.6~m relative to daytime flights. In contrast, nighttime flights at the wetter Alfred site exhibited increased point duplication, altered return structure, and reduced ground detection in dense vegetation, particularly during periods of fog or canopy-level moisture. These results demonstrate that the benefits of nighttime UAV lidar acquisition depend strongly on atmospheric moisture conditions. Nighttime surveys can improve data quality under dry conditions but may reduce reliability in humid or fog-prone environments.
+}
+
+\keywords{Unpiloted Aerial Vehicle lidar, lidar intensity, dense vegetation, peatland}
+
+\maketitle
+
+%\saythanks % added 28-02-2014 Markus Englich
+
+\section{Manuscript}\label{MANUSCRIPT}
+ 
+% KAO: Sloppy spacing ensures non-overfull lines. Can be removed if this is not an issue.
+\sloppy
+
+\subsection{Introduction}\label{sec:intro}
+
+UAV-based LiDAR systems operate under strict power and payload constraints imposed by battery capacity. As a result, the emitted laser power is typically lower than that of manned airborne systems, making UAV LiDAR more sensitive to environmental conditions that reduce return signal strength. Dense vegetation and wet surface conditions are well known to challenge LiDAR surveys, limiting canopy penetration and reducing the accuracy of ground elevation estimates ~\cite{simpsonAssessmentErrorsCaused2017,coveneyAssociationElevationError2013,hopkinsonVegetationClassDependent2005,toyraAssessmentAirborneScanning2003}. Moisture-rich vegetation and substrates further alter reflectance properties, increasing waveform distortion and classification uncertainty. These limitations are particularly relevant for low-altitude UAV surveys conducted over heterogeneous landscapes.
+
+Illumination conditions during data acquisition also play an important role. Daytime flights are subject to solar background radiation, which introduces photon noise and reduces the signal-to-noise ratio of LiDAR waveforms ~\cite{fengSystematicEvaluationMultiresolution2023,sunTechniqueSeparateLidar2016a}. This effect is amplified in environments with dense vegetation and high surface moisture, where scattering and absorption processes are more complex. Nighttime acquisitions eliminate solar background interference and are therefore expected to improve backscatter intensity and potentially allow higher flight altitudes without compromising data quality. However, night time conditions are often associated with elevated humidity, dew formation, or fog. These factors are more difficult to detect visually at night and may negatively affect atmospheric transmission, surface reflectance, and return structure. In this study, ground and non-ground classifications were applied consistently across all analyses, enabling clearer interpretation of vegetation-specific responses to illumination and moisture conditions. Despite this, few studies have explicitly examined the combined effects of illumination and humidity on low-altitude UAV LiDAR over densely vegetated environments characterized by fine-scale variability in surface wetness.
+
+Although LiDAR is an active sensing technology and does not rely on ambient light for range measurement, environmental illumination has been shown to influence data quality indirectly, particularly for mobile and airborne systems. Previous studies report that strong sunlight, complex shadowing, and unfavorable scan geometries can introduce noise and reduce point-cloud consistency in outdoor environments with heterogeneous surfaces and vegetation ~\cite{kaartinenLiDARBasedStructuralHealth2022}. These effects arise primarily from sensor-level noise, reduced effective laser range under intense solar radiation, and increased difficulty in point-cloud interpretation, rather than from limitations in the ranging principle itself.
+
+For UAV-based platforms, illumination effects are often mediated through auxiliary systems rather than the LiDAR sensor alone. Many UAV LiDAR surveys rely on visual sensors or vision-assisted SLAM for navigation, registration, and pose estimation. Under poor lighting conditions, strong shadows, or high-contrast illumination, feature tracking and alignment can degrade, indirectly reducing point-cloud accuracy and completeness ~\cite{distefanoMobile3DScan2021}. At the opposite extreme, very bright and clear conditions have also been reported to reduce laser performance in mobile systems, suggesting that both low-light and high-irradiance scenarios can influence data quality through different mechanisms ~\cite{distefanoMobile3DScan2021}. Nevertheless, comparative UAV remote-sensing reviews consistently identify LiDAR as substantially more robust to illumination variability than camera-based structure-from-motion approaches, highlighting this robustness as a key advantage for UAV operations under diverse lighting conditions, including nighttime surveys ~\cite{guanReviewUAVBasedRemote2022}.
+
+Atmospheric conditions, particularly humidity and related weather phenomena, represent another critical but poorly quantified factor affecting UAV-based LiDAR performance. Multiple reviews identify humidity, rain, fog, snow, and airborne particulates as primary contributors to signal attenuation, scattering, and increased noise, resulting in reduced point-cloud resolution and completeness ~\cite{kaartinenLiDARBasedStructuralHealth2022,distefanoMobile3DScan2021}. These effects are especially pronounced for airborne and UAV platforms because of longer laser path lengths and greater exposure to the atmosphere compared with terrestrial systems ~\cite{kaartinenLiDARBasedStructuralHealth2022}. While relative humidity is rarely isolated as an independent variable, it is commonly treated alongside fog and precipitation as an indicator of degraded acquisition conditions. This suggests that even moisture-laden air without visible precipitation may negatively affect LiDAR returns.
+
+From an operational perspective, unfavorable weather conditions, including high humidity, precipitation, and wind, also constrain flight stability, navigation accuracy, and safe data acquisition. Reviews focused on civil infrastructure and bridge inspection emphasize the lack of systematic studies evaluating UAV LiDAR performance under varying illumination and weather conditions, and explicitly call for controlled experiments to quantify these effects and establish operational thresholds ~\cite{ferozUAVBasedRemoteSensing2021}. Consequently, current best practices remain conservative, favoring dry, clear conditions and careful mission planning to reduce environmental uncertainty.
+
+Overall, the existing literature indicates that illumination and humidity affect UAV-based LiDAR data quality primarily through indirect mechanisms, such as sensor noise, atmospheric attenuation, and navigation errors, rather than through fundamental limitations of the ranging technology. However, controlled UAV-specific experiments comparing daytime and nighttime acquisitions across varying humidity conditions remain largely absent. Addressing this gap is essential for applications that aim to exploit nighttime LiDAR surveys to reduce illumination-related disturbances while maintaining reliable performance under variable atmospheric conditions.
+
+\subsection{Objectives and Methods}\label{sec:objectives}
+
+This study evaluates whether nighttime UAV-based lidar acquisition improves data quality relative to daytime acquisition in vegetation-rich environments with variable surface wetness. The analysis focuses on changes in return structure, intensity, and ground surface accuracy under contrasting illumination and atmospheric conditions.
+
+UAV lidar data were collected at two peatland sites in eastern Canada using a Balkotech Connectiv system equipped with a Hesai Pandar XT32 M2X lidar and an APX15 inertial navigation system mounted on a DJI M350 platform. The Alfred Bog site (Ontario) exhibits strong gradients in vegetation density and surface saturation, ranging from upland forest to open, waterlogged bog. The Quinces Bog site (Nova Scotia) contains similar vegetation classes but generally drier surface conditions in open areas dominated by \textit{Sphagnum} and lichen (Figure~\ref{fig:loc_map}).
+
+\begin{figure}[ht!]
+\begin{center}
+		\includegraphics[width=1.0\columnwidth]{figures/Figure_1.eps}
+	\caption{Location of the two study sites in eastern Canada.}
+\label{fig:loc_map}
+\end{center}
+\end{figure}
+
+
+At each site, six flight missions were conducted. Daytime and nighttime flights were flown at heights of 40~m, 75~m, and 100~m above ground level, with a constant flight speed of 3.2~m~s$^{-1}$. Flights were completed within short temporal windows to limit changes in vegetation state and ground conditions. Microclimate conditions were recorded during each mission and are summarized in Table~\ref{tab:microclimate}.
+
+Microclimate variables were recorded using on-site automated weather stations located within 200~m of each flight area and operating at 2~m above ground level. Measurements were logged at 1-5~min intervals and averaged over the duration of each flight mission to ensure temporal alignment with LiDAR acquisition. Relative humidity, air temperature, wind speed, and water vapor content were used as proxies for near-canopy atmospheric conditions. Although these measurements do not directly capture within-canopy moisture or aerosol concentrations, they provide a consistent basis for comparing atmospheric stability and condensation potential across sites, altitudes, and illumination conditions.
+
+Atmospheric conditions varied substantially among flights, reflecting differences in site, time of day, and acquisition period (Table~\ref{tab:microclimate}). At the Alfred site, most flights were conducted between June~12 and June~13, with the exception of the daytime 75~m flight on June~16. Flights at the Quince site were primarily conducted between June~2 and June~3, with the exception of the nighttime 75~m and 100~m flights acquired on August~20. Although data were initially collected during both periods, the June acquisitions could not be fully processed and were therefore repeated. Data from both campaigns were analyzed to ensure consistency within their overlapping spatial extent and to verify that vegetation phenology, surface moisture dynamics, and atmospheric stability did not confound site-specific or diurnal effects.
+
+Daytime flights at both sites were characterized by higher air temperatures (13.0-25.4~$^\circ$C), lower relative humidity (59.2-86.4\%), and generally stronger winds, whereas nighttime flights exhibited cooler temperatures (down to $-0.03~^\circ$C), higher relative humidity (up to 99.9\%), and reduced wind speeds. The near-freezing temperatures observed during several nighttime missions reflect the cooler microclimatic conditions of peatlands, which were significantly cooler, mainly due to a higher decline in nighttime air temperatures ~\cite{slowinskaLongtermMicroclimateStudy2022}. Although water vapor content and absolute humidity were consistently lower during night flights, particularly at Alfred, lower temperatures reduce the air's capacity to retain moisture, resulting in higher relative humidity at night.
+
+{
+    \renewcommand{\arraystretch}{1.2}
+    \begin{table*}[h]
+        \centering
+        \begin{tabular}{l c c c | c c c | c c c | c c c}
+            \toprule
+            \multirow{3}{*}{} & \multicolumn{6}{c}{Alfred} & \multicolumn{6}{c}{Quinces} \\ \cline{2-13}
+            &\multicolumn{3}{c}{Day}&\multicolumn{3}{c}{Night}&\multicolumn{3}{c}{Day}&\multicolumn{3}{c}{Night}\\ \cline{2-13}
+            &40&75&100&40&75&100 & 40&75&100&40&75&100\\ \hline
+            Wind speed ($m/s$) & 9.5 & 2.6 & 9.5 & 0.7 & 0.5 & 5.3 & 3.9 & 3.2 & 3.2 & 4.8 & 5 & 1.1 \\ \hline
+            Max gust ($m/s$) & 30 & 4.8 & 30 & 1 & 0.9 & 18.8 & 8.13 & 6.2 & 6.2 & 10.2 & 10.2 & 2 \\ \hline
+            Temperature ($C$) & 19.1 & 25.4 & 19.1 & -0.03 & 0.13 & 5.3 & 13.2 & 13 & 13 & 8.1 & 8.2 & 7 \\ \hline
+            Water content ($\times 10^{-6}\, m^3/m^3$) & 11.0 & 14.0 & 8.0 & 4.8 & 4.8 & 7.9 & 9.7 & 9.8 & 9.8 & 8.0 & 8.0 & 7.0 \\ \hline
+            Absolute humidity ($g/m^3$) & 10.8 & 14 & 8.1 & 5.3 & 4.8 & 8.1 & 9.7 & 9.8 & 9.8 & 8.3 & 8.4 & 7.4 \\ \hline
+            Relative humidity (\%) & 68.3 & 59.2 & 64.5 & 95.8 & 98.3 & 64.5  & 81.4 & 86.4 & 86.4 & 99.9 & 99.9 & 94.2 \\
+            \bottomrule
+        \end{tabular}
+        \caption{Flight-specific microclimate measurements at the two sites and across the three tested flight altitudes were averaged over the flight duration. The Quince's Day flight at 75 and 100 m share the same data because both were completed within the same mission.}
+        \label{tab:microclimate}
+    \end{table*}
+}
+
+LiDAR trajectories were post-processed using differential GNSS and inertial data. Standard point cloud classification routines were applied consistently across all datasets. Ground checkpoints were not used as control points during processing to allow independent accuracy assessment. Processing explicitly accounted for differences in point density caused by flight altitude and scan geometry.
+
+Areas of interest (AOIs) were defined based on spatial overlap between individual flight strips. Regions covered by fewer than five overlapping strips were excluded to ensure sufficient point density. AOIs from 40~m and 100~m flights were intersected to retain only areas common to all flight configurations. This approach ensured comparable spatial coverage across datasets.
+
+Independent GNSS checkpoints were surveyed at each site for validation. At Alfred, checkpoints were distributed across open, sparse, and dense vegetation zones (Figure~\ref{fig:checkpoints_photos}). At Quinces, checkpoints were located in open and shrubby areas and along a paved road surface. For each checkpoint, ground-classified points within a 30~cm buffer were extracted. Root mean square error (RMSE) was calculated using last or single returns. Mean intensity values were computed within the same buffers.
+
+\begin{figure}[ht!]
+\begin{center}
+		\includegraphics[width=1.0\columnwidth]{figures/Figure_2.png}
+	\caption{Representative field photographs illustrating (a) dense vegetation at the Alfred Bog site, (b) shrubby vegetation at Quinces Bog, and (c) open terrain at Quinces Bog, highlighting the main surface and canopy conditions sampled in this study.
+}
+\label{fig:checkpoints_photos}
+\end{center}
+\end{figure}
+
+\subsection{Results and Discussion}\label{sec:results}
+
+Figures~\ref{fig:nreturns-quinces} and~\ref{fig:nreturns-alfred} present the distributions of first, second, and third returns for daytime and nighttime flights at three flight altitudes. At Quinces Bog, nighttime acquisitions consistently increased the proportion of third returns across all altitudes, with the strongest relative increase observed at 40~m. This trend suggests enhanced canopy penetration under nighttime conditions.
+
+In contrast, the Alfred site exhibits a more heterogeneous response. Although nighttime flights at 75~m and 100~m generated higher numbers of third returns, the daytime flight at 40~m produced the highest third-return count. This pattern may be related to the presence of dew during nighttime acquisitions at Alfred, which could have reduced laser penetration.
+
+A similar pattern is observed for second returns. At Quinces Bog, nighttime flights consistently yielded higher numbers of second returns. At Alfred, increased second-return counts were also observed during nighttime flights at 75~m and 100~m, whereas the daytime flight at 40~m produced the highest number of second returns.
+
+Finally, first returns were generally more abundant during daytime flights at Alfred across all altitudes. At Quinces Bog, a similar trend was observed only at 40~m. At 75~m, first-return counts were comparable between daytime and nighttime acquisitions, while at 100~m, nighttime flights produced a higher number of first returns. 
+
+\begin{figure}[ht!]
+    \begin{center}
+		\includegraphics[width=1.0\columnwidth]{figures/Figure_3.eps}
+        \caption{Daytime and nighttime return number distributions at three flight heights for Quinces Bog.}
+        \label{fig:nreturns-quinces}
+    \end{center}
+\end{figure}
+
+\begin{figure}[ht!]
+    \begin{center}
+		\includegraphics[width=1.0\columnwidth]{figures/Figure_4.eps}
+        \caption{Daytime and nighttime return number distributions at three flight heights for Alfred Bog.}
+        \label{fig:nreturns-alfred}
+    \end{center}
+\end{figure}
+
+Figures~\ref{fig:nintensity-quinces} and~\ref{fig:nintensity-alfred} present the intensity distributions within dense shrubby vegetation for daytime and nighttime acquisitions. At Quinces Bog, nighttime flights consistently exhibited higher mean intensity values across all altitudes, likely due to reduced solar background noise, which can enhance intensity.
+
+At Alfred, nighttime intensity responses were less consistent. Although mean intensity increased at certain flight altitudes, variability was higher, particularly at 40~m. This behavior is consistent with the observed increase in first and third returns during daytime flights at this altitude, suggesting that higher signal intensities may contribute to an increased number of detectable returns.
+
+{
+    \renewcommand{\arraystretch}{1.2}
+    \begin{table*}[h!]
+        \centering
+		\begin{tabular}{l c c c | c c c | c c c | c c c}
+            \toprule
+            \multirow{3}{*}{} & \multicolumn{6}{c}{Alfred} & \multicolumn{6}{c}{Quinces} \\ \cline{2-13}
+            &\multicolumn{3}{c}{Day}&\multicolumn{3}{c}{Night}&\multicolumn{3}{c}{Day}&\multicolumn{3}{c}{Night}\\ \cline{2-13}
+            &40&75&100&40&75&100 & 40&75&100&40&75&100\\ \hline
+			Duplicated points (\%) & 13.3 & 7.9 & 6.5 & 14.2 & 13.2 & 10.2 & 12.8 & 4.9 & 1.2 & 14.8 & 8.5 & 6 \\ \hline
+			Average intensity & 13.7 & 15 & 17.4 & 15.9 & 14.3 & 15.6    & 12 & 14.2 & 17.3 & 14.5 & 19.2 & 20.5 \\ \hline
+            Points with negative heights & 681 & 944 & 563 & 5 & 0 & 0 & 361 & 526 & 314 & 0 & 3 & 0 \\ \hline
+            RMSE from road points (m) & - & - & - & - & - & - & 1.08 & 1.13 & 1.15 & 1.1 & 0.06 & 0.07 \\ \hline
+            RMSE from open/shruby areas (m) & 0.7 & 0.69 & 0.89 & 0.64 & 0.7 & 5.25 & 1.01 & 1.07 & 1.06 & 0.99 & 0.41 & 0.42 \\ \hline
+            RMSE from dense vegetated areas (m) & 1.06 & 0.78 & 0.98 & 2.46 & 0.81 & 6.08 & - & - & - & - & - & - \\
+            \bottomrule
+		\end{tabular}
+        \caption{Metrics from each flight height and site.}
+        \label{tab:aoi-stats}
+    \end{table*}
+}
+
+\begin{figure}[ht!]
+    \begin{center}
+		\includegraphics[width=1.0\columnwidth]{figures/Figure_5.eps}
+        \caption{Daytime and nighttime intensity distributions at three flight heights within dense shrubby vegetation at Quinces Bog.}
+        \label{fig:nintensity-quinces}
+    \end{center}
+\end{figure}
+
+\begin{figure}[ht!]
+    \begin{center}
+		\includegraphics[width=1.0\columnwidth]{figures/Figure_6.eps}
+        \caption{Daytime and nighttime intensity distributions at three flight heights within dense shrubby vegetation at Alfred Bog.}
+        \label{fig:nintensity-alfred}
+    \end{center}
+\end{figure}
+
+Table~\ref{tab:aoi-stats} summarizes point cloud quality metrics across sites, flight altitudes, and illumination conditions. At the Quinces site, nighttime flights were conducted under near-saturated relative humidity (94.2-99.9\%) but moderate absolute humidity (7.4-8.4~g~m$^{-3}$) and stable temperatures (7.0-8.2~$^\circ$C) (Table~\ref{tab:microclimate}). These conditions indicate cool but relatively dry air masses with limited condensation, which is consistent with the higher average intensity values and lower RMSE observed over open and shrubby areas at night, particularly at 75~m and 100~m flight heights. RMSE values over the road surface were also reduced during nighttime missions, indicating improved ground surface detection under reduced solar background noise and limited atmospheric attenuation.
+
+At Alfred, nighttime acquisitions coincided with very high relative humidity (95.8-98.3\%) and near-freezing air temperatures ($-0.03$ to $0.13~^\circ$C). These conditions are favorable for dew formation and intermittent fog, leading to increased near-canopy scattering. Accordingly, the proportion of duplicated points increased at night for all altitudes, indicating enhanced multiple scattering and waveform distortion. Nighttime flights also produced fewer reliable ground returns in dense vegetation, reflected in substantially higher RMSE values and the absence of valid ground measurements for some flight configurations. The observed dew also can alter surface reflectance and increase pulse scattering within the canopy.
+
+The high number of negative-height points observed during daytime flights at Alfred, which were largely absent at night, coincided with higher air temperatures (19.1-25.4~$^\circ$C) and lower relative humidity (59.2-68.3\%), suggesting that illumination-driven sensor noise and registration errors were more influential under dry, high-irradiance conditions.
+
+Overall, Table~\ref{tab:aoi-stats} indicates that nighttime acquisition improves intensity and ground-surface accuracy when high relative humidity is not accompanied by strong condensation, as observed at Quinces. In contrast, under near-saturated conditions, as observed at Alfred, nighttime acquisition degrades the reliability of ground-point classification, particularly within dense vegetation, leading to reduced ground-surface accuracy.
+
+These patterns were consistent across the three tested flight altitudes and were observed in multiple missions at each site, suggesting that the reported effects are not driven by isolated flight conditions but reflect systematic responses to illumination and atmospheric moisture.
+
+Several limitations should be considered when interpreting these results. Atmospheric moisture conditions were characterized using flight-time observations and site-level measurements rather than continuous, within-canopy humidity or aerosol sensing. As a result, the relative contributions of fog, dew, and humidity-induced scattering cannot be fully separated.
+
+The analysis is also limited to two peatland sites, which may constrain generalization to other vegetation types or climates. Also the flights were collected with a single UAV-lidar sensor configuration, and other lidar sensors and other IMUs will have different power and precision associated with them. Finally, nighttime and daytime flights were conducted sequentially rather than simultaneously, and short-term changes in canopy moisture state may have contributed to some observed differences.
+
+%  Across all flight heights at the dry Quinces site, nighttime acquisition increased third-return counts, increased mean intensity by approximately 20-40\%, and reduced ground surface RMSE by up to 0.6~m relative to daytime flights, whereas no consistent accuracy gains were observed at the wetter Alfred site.
+
+\subsection{Conclusions}\label{sec:conclusions}
+
+This study provides a controlled comparison of daytime and nighttime UAV-based lidar acquisition across sites with contrasting vegetation density and surface moisture conditions. Results show that nighttime acquisition can improve lidar performance under dry conditions but may degrade data quality when humidity, dew, or fog are present.
+
+At the drier Quinces Bog site, nighttime flights increased third returns, raised mean intensity values, and reduced ground surface RMSE. These improvements are consistent with reduced solar background noise and enhanced signal-to-noise ratios. In contrast, nighttime flights at the wetter Alfred site exhibited increased point duplication, altered return structure, and reduced ground detection in dense vegetation. Field observations indicate that fog and canopy-level moisture contributed to signal scattering rather than improved penetration.
+
+These findings demonstrate that illumination effects on UAV lidar are strongly mediated by atmospheric moisture. Nighttime missions are most likely to yield performance gains when relative humidity remains below approximately 90\% and air temperatures remain well above the dew point, thereby minimizing condensation and near-surface fog formation. Under near-saturated conditions, nighttime acquisition may reduce ground-surface accuracy compared with that observed during daytime flights.
+
+Accordingly, incorporating microclimatic indicators, such as relative humidity and dew formation potential, into mission planning is critical for optimizing UAV lidar surveys. Future work will directly quantify these variables and extend the analysis across additional sites to refine operational guidelines. In particular, integrating within-canopy humidity sensors, leaf wetness probes, and short-path visibility measurements would help resolve the respective contributions of fog, dew, and atmospheric vapor to LiDAR signal degradation.
+
+
+{
+	\begin{spacing}{1.17}
+		\normalsize
+		\bibliography{isprs_fullpaper} % Include your own bibliography (*.bib), style is given in isprs.cls
+	\end{spacing}
+}
+
+\end{document}
+
