@@ -1,158 +1,337 @@
-# A comparison of day and night LiDAR flights
+# Day–Night LiDAR Flight Comparison
 
-The signal-to-noise ratio is higher at night due to the absence of solar interference. In other words, the backscatter intensity should be higher at night than during the day. Point density will also increase with darkness and more ground returns will be detected. This is probably more important for "low power" system, like drone lidar.
+This repository contains scripts, notes, and workflow documentation for comparing drone-based LiDAR acquisitions collected during daytime and nighttime flights.
 
-The absence of solar interference should make the intensity higher at night. This could facilitate the collection of data at higher altitudes at night without loss of quality.
+The main objective is to evaluate whether nighttime LiDAR acquisitions produce higher-quality point clouds than daytime acquisitions because of reduced solar interference. The comparison focuses on signal intensity, point density, return structure, and vertical accuracy against GNSS validation points.
+
+## Working hypothesis
+
+Nighttime LiDAR flights are expected to have:
+
+* Higher signal-to-noise ratio due to reduced solar background noise.
+* Higher backscatter intensity.
+* Increased point density.
+* More ground returns, especially under vegetation.
+* Potentially improved data quality at higher flight altitudes.
+
+These effects may be especially important for lower-power drone LiDAR systems.
 
 ## Scientific background
 
-The noise introduced by sunlight during the daytime affects the backscatter LiDAR signal (the paper discuss space-based LiDAR) (W. Sun et al., 2016, p. 1) In addition, the intensity values are affected by the density of the canopy and the orientation of its elements in space (Arnqvist et al., 2020, p. 5940).
+Solar radiation can introduce noise into daytime LiDAR measurements, reducing the quality of the backscatter signal. This effect has been documented in space-based LiDAR studies, where sunlight contamination must be separated from the LiDAR return signal (Sun et al., 2016).
 
-Another study compared the day and night performance of a space-based sensor (H. Sun et al., 2021).
+LiDAR intensity is also affected by canopy structure, including canopy density and the orientation of canopy elements (Arnqvist et al., 2020). Therefore, vegetation structure must be considered when interpreting day–night differences in intensity and return density.
 
-Check the humidity and temperature conditions at the MET stations. According to the [RockRobotic website](http://learn.rockrobotic.com/how-does-lidar-intensity-impact-the-accuracy-of-point-clouds) (search a scientific paper talking about that), the higher the temperature, the weaker the returned laser signal pulse. This is because air density decreases with high temperatures, “causing the laser pulse to scatter more”.
+A related study evaluated day and night performance differences for a space-based lightning mapping sensor (Sun et al., 2021). Although this is not a drone LiDAR study, it is relevant as an example of day/night effects on optical remote sensing performance.
 
-At night, the temperature is lower, but the humidity is higher (mainly because the air's capacity to hold water vapour is lower at night due to the lower air temperature). “As the humidity increases, the amount of water vapor in the air also increases, causing the laser pulse to scatter more. This can lead to a weaker return signal and a decrease in LiDAR intensity.”
+Atmospheric conditions may also influence LiDAR intensity. Temperature, humidity, mist, and fog can affect laser propagation and signal attenuation. For this reason, meteorological station data should be checked for each flight.
 
-## Methods
+TODO: Add peer-reviewed references on the effect of temperature, humidity, water vapour, fog, and aerosols on airborne or terrestrial LiDAR intensity.
 
-### Study sites and missions
+## Study sites and flight inventory
 
-Quinces bog\*.
+### Quinces bog
 
-Ellipsoidal heights, EPSG:32620
+* Coordinate reference system: `EPSG:32620`
+* Heights: ellipsoidal
+<!-- * Local working data path:
+  `W:/koreen/Koreen_DayNight_LiDAR_Quinces/corrected LAS` -->
 
-Stored inside working data (Pangolin): "W:/koreen/Koreen_DayNight_LiDAR_Quinces/corrected LAS"
+|   Height | Moment | Date                            | Time UTC | Local time |
+| -------: | ------ | ------------------------------- | -------: | ---------: |
+|     40 m | Day    | 2025-06-03                      |    15:10 |      11:10 |
+|     75 m | Day    | 2025-06-03                      |    16:18 |      12:18 |
+|    100 m | Day    | 2025-06-03                      |     TODO |      12:18 |
+|     40 m | Night  | 2025-06-02                      |    04:23 |      00:23 |
+|     75 m | Night  | 2025-06-02                      |    04:42 |      00:42 |
+|  75 m v2 | Night  | 2025-08-20                      |    01:33 |      21:33 |
+|    100 m | Night  | TODO: incorrect original record |     TODO |       TODO |
+| 100 m v2 | Night  | 2025-08-20                      |    00:53 |      20:53 |
 
-| Height | Moment | Date | Time UTC | Local time |
-| 40 | Day | Jun 3, 2025 | 3:10 pm| 11:10 am |
-| 75 | Day | Jun 3, 2025| 4:18 pm| 12:18 pm\*\* |
-| 100 | Day | Jun 3, 2025| 12:18 pm\*\* |
-| 40 | Night | Jun 2, 2025| 4:23 am| 12:23 am |
-| 75 | Night | Jun 2, 2025| 4:42 am | 12:42 am |
-| 75v2 | Night | Aug 20, 2025| 1:33 am | 9:33 pm |
-| 100 | Night | Wrong |  |  |
-| 100v2 | Night | Aug 20, 2025 | 12:53 am | 8:53 pm |
+Notes:
 
-Alfred bog\*.
+* The 75 m and 100 m daytime flights at Quinces were flown during the same mission.
+* The original 100 m nighttime flight was unavailable for processing and was recollected in August 2025.
+* 100 and 75 nighttime flights were reprocessed to obtain ellipsoidal heights.
 
-Ellipsoidal heights, EPSG:32618
+### Alfred bog
 
-Stored inside working data (Pangolin): "W:/koreen/Koreen Alfred Processing/corrected LAS no GCPs"
+* Coordinate reference system: `EPSG:32618`
+* Heights: ellipsoidal
+<!-- * Local working data path:
+  `W:/koreen/Koreen Alfred Processing/corrected LAS no GCPs` -->
 
-| Height | Moment | Date | Time UTC | Local time |
-| 40 | Afternoon | Jun 12, 2025 | 11:44 pm | 6:44 pm |
-| 75 | Day | Jun 16, 2025 | 6:49 pm | 1:49 pm |
-| 100 | Afternoon | Jun 12, 2025 | 12:34 pm | 7:34 pm |
-| 40 | Night | Jun 13, 2025 | 4:15 am | 11:15 pm |
-| 75 | Night | Jun 13, 2025 | 5:58 am | 12:58 am |
-| 100 | Night | Jun 13, 2025 | 3:38 am | 10:38 pm |
+| Height | Moment    | Date       | Time UTC | Local time |
+| -----: | --------- | ---------- | -------: | ---------: |
+|   40 m | Afternoon | 2025-06-12 |    23:44 |      18:44 |
+|   75 m | Day       | 2025-06-16 |    18:49 |      13:49 |
+|  100 m | Afternoon | 2025-06-12 |    00:34 |      19:34 |
+|   40 m | Night     | 2025-06-13 |    04:15 |      23:15 |
+|   75 m | Night     | 2025-06-13 |    05:58 |      00:58 |
+|  100 m | Night     | 2025-06-13 |    03:38 |      22:38 |
 
-\*: The LiDAR has been processed with PPP using a base station recording Rinex data up to 3 hours. The base location was PPP'd and then updated when trajectory correction was done. A point dataset was collected using a GNSS Stonex station at each site for validation purposes.
+Notes:
 
-\*\*: It is probably that 75 and 100 day flights at Quinces were flown in the same mission.
+* The 40 m nighttime flight at Alfred was incomplete.
+* The 100 m nighttime flight had orthometric heights. It was reprocessed to obtain ellipsoidal heights.
 
-Some problems:
+## GNSS and trajectory processing notes
 
-- The 100-meter flight in Nova Scotia is unavailable to process. This was re-collected in August.
-- The 40m night flight in Alfred was incomplete.
+The LiDAR data were processed with PPP using base station RINEX files recorded for up to 3 hours (Canadian sites) and national NTRIP corrections (Spanish sites).
+ The base station location was PPP-corrected and then updated during trajectory correction.
 
-### Field notes
+A GNSS validation point dataset was collected at each site using a Stonex GNSS station (Canadian sites) and Emlid GNSS (Spanish sites). These validation points are used for evaluating vertical accuracy.
 
-Day 8 - Encinacorba night
+## Setting a common flight mission area
 
-- Calibrated payload when we started the 100 m flight
-- Wind is from 6-9 m/s each time
-- We accidentally flew at 1.9 m/s
-- The 100 m flight was normal
-- 40 m flight we couldn't calibrate at the end
-- It also started raining right at the end of the 40 m flight.
+The overlap between HESAI flightlines is irregular. To ensure that missions are compared over equivalent areas, an area of interest (AOI) was created for each mission site using only zones with common flightline overlap.
 
-Day 9 - Artieda day and night
+The AOI files are stored in:
 
-- We did 40 and 100 with one set of batteries. 
-- We didn't land but we did do the recalibration for both flights.
-- then we 75.
-- wind 5 m/s
-- Flew 1.9 m/s again because we couldn't change it.
+```text
+data/metadata/flights_common_overlap.gpkg
+```
 
-Day 10 - Encinacorba night 
+TODO: Check and upload the script used to generate the AOIs.
 
-- At steep slopes site:
-    - flew at 3.1 m/s
-    - All missions with one set of batteries
-    - else did calibration at the end of each mission but didn't do a 2nd calibration again at the start of the next mission as they are continuous.
-    - low wind (0-1 m/s)
-- Site at top of mountain by edge
-    - we did 40 and 100 then landed and switched batteries to do the 75
-    - did all calibrations the same as the other site.
-    - wind was high at times (from 7-11 m/s)
+## Processing workflow
 
-Day 11 - Encinacorba day:
+First, install the custom package containing the functions required for the workflow.
 
-- At steep slope site (burned hillshade)
-    - Failed the first flight (the camera wasn’t turned on)
-    - We did 40, 75 and 100 with one set of batteries.
-    - flew at 3.1 m/s
-    - We did 40 and 100 flew at 1.9 m/s with one set of batteries, then 75 with the other set.
-    - did all calibrations the same as the day 10
-- At scenery site
-    - RTK collection - need to add height of pole (1.8m)
-    - flew at 3.1 m/s the three flights
-    - We did the 40, 75 and 100 with one set of batteries.
+```R
+devtools::install_github("CristianICS/lidaynight")
+```
 
-### Comparison analysis
+The second step is retiling the mission `LAZ` files. Use `R/define_grid_size.R` to find a good size to retile with:
 
-*First tests without GCPs georef. The targets cannot be detected at night.*
+```
+Rscript R/define_grid_size.R <point_clouds_dir> <time> <height> <area> <chunk_size>
+```
 
-1. Counting the number of points in each return -- spatially, rasterize the number of points at 25 cm resolution[^1] and count the number of returns.  We should do this at a subset in the center of the image so that we have a consistent number of flightlines.
-2. Computing the average intensity by return. - spatially, rasterize the intensity for each "return".
-3. Calculate the root mean square error (RMSE) of the heights between GNSS-collected points and LiDAR point clouds. **The first approach involves trying to locate the LiDAR ground return points at the exact GNSS positions.** The second approach is to create a DEM or perform a buffer around the GNSS points, computing the average height of the last return or only return.
-4. Make a product showing how many flightlines are at each location for each flight/height.
+Then, use the R script `R/compute_stats.R` with the selected chunk size to compute the statistics for each flight mission.
 
-[^1]: 25 cm might not be a good resolution. Some points do not contain information around 25cm buffer.
+```bash
+Rscript R/compute_stats.R <point_clouds_dir> <time> <height> <area> <chunk_size>
+```
 
-### Computing LiDAR day/night metrics
+`point_clouds_dir`
 
-File structure recommended
+Folder containing the processed mission `LAZ` files. There must be one folder per combination of acquisition time and flight altitude. These subfolders must be named using the format `<time>_<height>`.
 
-R folder contains the main function files. Each folder with the mission flights contains an R folder to compute the stats of the current file, with the global functions. Why are separated files used? Because each mission has its own characteristics (e.g. orthometric vs geoidal heights).
+`time`
 
-The workflow is the following:
+Acquisition time of the mission: `day` or `night`.
 
-1. Clip all the tiles to the mission AOI
-2. Classify the point cloud with [OpenPointClass](https://github.com/uav4geo/OpenPointClass)
-    * Delete the old clip file and persist only the classified one.
-3. Compute the stats
+`height`
 
-### Workflow
+Flight altitude: `40`, `75`, or `100`.
 
-1. Cristian downloads Rinex files for time of flight from Spanish active stations (Encinacorba) and the RINEX file for the base from artieda.
-2. Cristian uploads GPS rover validation data from Spanish flights.
-3. Koreen processes data through Pospac
-4. Koreen processes data through e-las and outputs individual laz files per flightline.
-5. Koreen create bounding boxes to clip out "evaluation area" where 5 flightlines overlap AND we have GPS validation data.  
-6. Cristian's script:
-    - Clip each strip to bounding box
-    - Filter each strip with a for loop and save them as temp file.  
-    - Create a las catalog for each filtered strip (e.g. temp file) in lidR. 
-    - Function to calculate all of the stats in the table - this reads the catalog and create a temp file to do the filtering process.
+`area`
 
-## Notes/thoughts
+Study area. Current options are `alfred` and `quinces`.
 
-- We don’t have a dry and low elevation site and point density may increase with elevation due to air density.  Think about getting a dry, low lying site with the Hesai.
-- Replace CRS: Alfred should be EPSG:32618 and Quinces is EPSG:32620. There might be some inconsistencies between ellipsoidal and orthometric heights within the Alfred and Quinces flights. The ones with orethometric heights have been labeled in a different way. This means that the conversions will not be needed for all and you'll have to use the file name to figure it out. For the spanish sites only orthometric.
+`chunk_size`
 
-## Met station
+Chunk edge length, in metres, used to retile the mission point cloud.
 
-Water content: absolute and relative humidity (indicate mist/fog)
+### Workflow steps
 
-The met station gives g/m3. Convert it to m3/m3 (volumetric units).
+For each mission, `compute_stats.R` performs the following steps:
+
+1. Retile the files to create an efficient processing grid.
+2. Compute ROI-level metrics.
+3. Classify ground points in each chunk using the Progressive TIN Densification (PTD) algorithm.[^1]
+4. Compute target-level metrics using ground-classified points and GNSS reference height data.
+
+Target-level statistics are computed using all ground-classified points within a 50 cm radius of each GNSS reference point.
+
+[^1]: Progressive TIN Densification (PTD). [Axelsson (2000)](https://www.isprs.org/proceedings/xxxiii/congress/part4/111_xxxiii-part4.pdf)
+
+### Output directory
+
+The stat files are stored inside the `results` folder using the following tree:
+
+```
+results/
+└── stats/
+    └── <area>
+        └── <time>_<height>
+            ├── roi_stats.csv
+            ├── roi_stats.gpkg
+            ├── byclass_gf.csv
+            ├── bytarget_gf_<cls_name>.csv
+            └── bytarget_gf_<cls_name>.gpkg
+```
+
+The ROI-level metrics are stored as a `csv` and `gpkg`, linked to the AOI that was used in the last one.
+
+For the target-level metrics, there is one file per class included in the targets (see section [Target-level metrics](#target-level-metrics)). A GeoPackage file is created for each target class. It contains the target-level metrics and the corresponding geometries. A final `byclass_gf.csv` file is computed aggregating the errors from the targets of each class.
+
+## Comparison metrics
+
+Two groups of statistics are computed: ROI-level LiDAR QA metrics and target-level vertical accuracy metrics. These are stored in the custom R package [lidaynight](https://github.com/CristianICS/lidaynight).
+
+### ROI-level metrics
+
+ROI-level metrics are computed with `globalStats()`. The function reads a folder of LAZ files as a `lidR` catalog, clips the data to a region of interest, computes QA metrics for each ROI, and writes the results to both `.csv` and `.gpkg` outputs.
+
+The main metrics are:
+
+| Metric                     | Description                                                                   |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| `n_pnts`                   | Total number of points inside the ROI.                                        |
+| `dup_pnts`                 | Number of duplicated points based on identical `X`, `Y`, and `Z` coordinates. |
+| `intensity_avg`            | Mean LiDAR intensity.                                                         |
+| `ret_1`, `ret_2`, `ret_3`  | Number of first, second, and third returns.                                   |
+| `ret_single`               | Number of points from pulses with only one return.                            |
+| `ret_abvone`               | Number of points from pulses with more than one return.                       |
+| `pnts_na_height`           | Number of points with missing height values.                                  |
+| `pnts_negative_height`     | Number of points with negative height values.                                 |
+| `height_q01`, `height_q99` | 1st and 99th height percentiles.                                              |
+| `pnts_height_lt_q01`       | Number of points below the 1st height percentile.                             |
+| `pnts_height_gt_q99`       | Number of points above the 99th height percentile.                            |
+
+Percentage versions of count-based metrics are added automatically using `add_pct_metrics()`. These columns use the suffix `_pct` and are calculated relative to `n_pnts`.
+
+### Target-level metrics
+
+Target-level metrics are computed with `targetStats()`. The function compares LiDAR points against GNSS ground reference targets using a fixed buffer around each target point. Metrics are computed using only ground-classified points by setting `ground_filter = TRUE`.
+
+The buffer radius is set to 50 cm because smaller buffers left some ground reference points with no LiDAR points, especially in densely vegetated areas.
+
+Targets are grouped by vegetation or surface class:
+
+| Class         | Description                                   |
+| ------------- | --------------------------------------------- |
+| `road`        | Roads or good paths with no vegetation cover. |
+| `shrub`       | Areas covered with bushes and shrubs with no or sparse trees. |
+| `open_treed`  | Areas with sparse trees and understory.       |
+| `dense_treed` | Highly dense vegetated areas.                 |
+
+For each target buffer, the computed metrics are:
+
+| Metric                   | Description                                                                                  |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| `n_pnts`                 | Total number of LiDAR points inside the buffer.                                              |
+| `n_pnts_last`            | Number of last-return points inside the buffer.                                              |
+| `n_pnts_last_incoherent` | Number of last returns with an absolute height error greater than the incoherency threshold. |
+| `intensity_avg`          | Mean LiDAR intensity inside the buffer.                                                      |
+| `thickness`              | Difference between maximum and minimum height among last returns.                            |
+| `sum_errs_last`          | Sum of last-return height errors relative to the GNSS reference height.                      |
+| `sum_errs_last_sq`       | Sum of squared last-return height errors.                                                    |
+| `rmse_last`              | RMSE of last-return heights relative to the GNSS reference height.                           |
+| `bias_last`              | Mean signed height error of last returns.                                                    |
+
+Class-level summaries are also written. These aggregate the target-level results by class and include:
+
+* Number of targets.
+* Number of targets containing last returns.
+* Total number of last returns.
+* Class-level RMSE.
+* Class-level bias.
+
+Per-target RMSE values should not be averaged directly because each target buffer can contain a different number of last returns. Instead, class-level RMSE is computed from the total sum of squared errors divided by the total number of last returns.
+
+## Meteorological data
+
+Meteorological station data should be checked for each flight.
+
+Relevant variables include:
+
+* Air temperature.
+* Relative humidity.
+* Absolute humidity.
+* Water vapour content.
+* Fog, mist, or precipitation.
+* Wind speed.
+* Wind direction.
+
+The meteorological station reports water content in `g/m³`.
+
+TODO: Convert water content from `g/m³` to volumetric units if needed. Confirm the target unit and formula before analysis.
+
+## Field notes
+
+The following field notes are retained for traceability.
+
+<details>
+<summary>Spanish campaign notes</summary>
+
+### Day 8 — Encinacorba night
+
+* Payload was calibrated before starting the 100 m flight.
+* Wind speed was approximately 6–9 m/s.
+* Flights were accidentally flown at 1.9 m/s.
+* The 100 m flight was normal.
+* The 40 m flight could not be calibrated at the end.
+* Rain started at the end of the 40 m flight.
+
+### Day 9 — Artieda day and night
+
+* The 40 m and 100 m flights were completed with one set of batteries.
+* The drone did not land between those flights, but recalibration was performed for both.
+* The 75 m flight was completed separately.
+* Wind speed was approximately 5 m/s.
+* Flights were again flown at 1.9 m/s because the speed could not be changed.
+
+### Day 10 — Encinacorba night
+
+#### Steep slope site
+
+* Flights were flown at 3.1 m/s.
+* All missions were completed with one set of batteries.
+* Calibration was performed at the end of each mission.
+* A second calibration was not performed at the start of the next mission because the missions were continuous.
+* Wind speed was low, approximately 0–1 m/s.
+
+#### Mountain edge site
+
+* The 40 m and 100 m flights were completed first.
+* The drone then landed and batteries were changed before the 75 m flight.
+* Calibrations were performed in the same way as at the steep slope site.
+* Wind speed was high at times, approximately 7–11 m/s.
+
+### Day 11 — Encinacorba day
+
+#### Steep slope site
+
+* The first flight failed because the camera was not turned on.
+* The 40 m, 75 m, and 100 m flights were completed with one set of batteries.
+* Flights were flown at 3.1 m/s.
+* Another set of 40 m and 100 m flights was flown at 1.9 m/s with one set of batteries, followed by the 75 m flight with another battery set.
+* Calibrations were performed in the same way as on Day 10.
+
+#### Scenery site
+
+* RTK data were collected.
+* TODO: Add the pole height correction of 1.8 m to the RTK data.
+* The 40 m, 75 m, and 100 m flights were flown at 3.1 m/s.
+* All three flights were completed with one set of batteries.
+
+### Operational workflow
+
+1. Download RINEX files for the time of flight from Spanish active stations for Encinacorba.
+2. Download or retrieve the RINEX file for the Artieda base station.
+3. Upload GPS rover validation data from Spanish flights.
+4. Process trajectories in POSPac.
+5. Process LiDAR data through e-LAS and export individual LAZ files per flightline.
+6. Create bounding boxes for evaluation areas where:
+
+   * At least five flightlines overlap.
+   * GNSS validation data are available.
+
+</details>
+
+## Known issues and TODOs
+
+* Confirm the correct UTC time for the Quinces 100 m daytime flight.
+* Add peer-reviewed references on atmospheric effects on LiDAR intensity.
+* Add met station characteristics
 
 ## References
 
-Arnqvist, J., Freier, J., & Dellwik, E. (2020). Robust processing of airborne laser scans to plant area density profiles. Biogeosciences, 17(23), 5939–5952. https://doi.org/10.5194/bg-17-5939-2020
+Arnqvist, J., Freier, J., & Dellwik, E. (2020). Robust processing of airborne laser scans to plant area density profiles. *Biogeosciences, 17*(23), 5939–5952. https://doi.org/10.5194/bg-17-5939-2020
 
-Sun, H., Yang, J., Zhang, Q., Song, L., Gao, H., Jing, X., Lin, G., & Yang, K. (2021). Effects of Day/Night Factor on the Detection Performance of FY4A Lightning Mapping Imager in Hainan, China. Remote Sensing, 13(11), 2200. https://doi.org/10.3390/rs13112200
+Sun, H., Yang, J., Zhang, Q., Song, L., Gao, H., Jing, X., Lin, G., & Yang, K. (2021). Effects of day/night factor on the detection performance of FY4A Lightning Mapping Imager in Hainan, China. *Remote Sensing, 13*(11), 2200. https://doi.org/10.3390/rs13112200
 
-Sun, W., Hu, Y., MacDonnell, D. G., Weimer, C., & Baize, R. R. (2016). Technique to separate lidar signal and sunlight. Optics Express, 24(12), 12949. https://doi.org/10.1364/OE.24.012949
+Sun, W., Hu, Y., MacDonnell, D. G., Weimer, C., & Baize, R. R. (2016). Technique to separate LiDAR signal and sunlight. *Optics Express, 24*(12), 12949. https://doi.org/10.1364/OE.24.012949

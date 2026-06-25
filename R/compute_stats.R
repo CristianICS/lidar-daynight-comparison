@@ -3,9 +3,9 @@ library(lidaynight)
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 4) {
+if (length(args) != 5) {
   stop(
-    "Usage: Rscript <script>.R <point_clouds_dir> <time> <height> <area> ",
+    "Usage: Rscript compute_stats.R <point_clouds_dir> <time> <height> <area> <chunk_size>",
     "\nExample: Rscript <script>.R W/pclouds day 100 alfred",
     call. = FALSE
   )
@@ -15,6 +15,7 @@ if (length(args) != 4) {
 time <- args[[2]]
 height <- args[[3]]
 area <- args[[4]]
+chunk_size <- args[[5]]
 
 point_clouds_dir <- args[[1]]
 
@@ -57,8 +58,9 @@ mission_folder <- paste(area, time, height, sep="_")
 FMPATH <- file.path(point_clouds_dir, area, mission_folder)
 
 # Area of interest
-aoi_fname <- paste0(area, "_aoi_intersected.geojson")
-AOIPATH <- file.path(ROOT, "data/sites", area, aoi_fname)
+aoi_database <- file.path(ROOT, "data/metadata/flights_common_overlap.gpkg")
+aoi_layer <- paste0(area, "_100_40")
+AOIPATH <- file.path(aoi_database)
 
 # Ground reference path
 gr_fname <- paste0(area, "_ground_reference.gpkg")
@@ -69,14 +71,14 @@ STATSPATH <- configStatsFolder(ROOT, area, time, height)
 
 # Retile mission laz files
 # ------------------------------------------------------------------------------
-grid_params <- checkTileGrid(FMPATH, chunk_size=75)
+grid_params <- list("size" = chunk_size, "buffer" = 0, "alignment" = TRUE)
 fmpath_retiled <- retileCatalog(FMPATH, grid_params, n_workers)
 
-catalogCompression(fmpath_retiled, TRUE)
+catalogCompression(fmpath_retiled, overwrite=FALSE)
 
 # Compute global statistics within the AOI region
 # ------------------------------------------------------------------------------
-globalStats(fmpath_retiled, AOIPATH, STATSPATH)
+globalStats(fmpath_retiled, AOIPATH, STATSPATH, layer_name = aoi_layer)
 
 # Ground classification
 # ------------------------------------------------------------------------------
