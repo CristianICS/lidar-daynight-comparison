@@ -83,7 +83,7 @@ globalStats(fmpath_retiled, AOIPATH, STATSPATH, layer_name = aoi_layer)
 
 # Ground classification
 # ------------------------------------------------------------------------------
-fmpath_cls <- groundClassification(fmpath_retiled, overwrite=TRUE)
+fmpath_cls <- groundClassification(fmpath_retiled, overwrite=FALSE)
 
 # Compute ground reference statistics for each ground reference target
 # ------------------------------------------------------------------------------
