@@ -16,6 +16,6 @@ paper/ISPRS_congress/isprs_fullpaper_highlighted.pdf
 paper/ISPRS_congress/ISPRSabstract_formatted.doc
 paper/ISPRS_congress/poster.svg
 R/deprecated
-results/grids
+results/grids/**/*.png
 .Rproj.user
 Rplots.pdf
