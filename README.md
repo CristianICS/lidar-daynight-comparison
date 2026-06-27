@@ -108,10 +108,9 @@ The second step is retiling the mission `LAZ` files. Use `R/define_grid_size.R` 
 Rscript R/define_grid_size.R <point_clouds_dir> <time> <height> <area> <chunk_size>
 ```
 
-Then, use the R script `R/compute_stats.R` with the selected chunk size to compute the statistics for each flight mission.
-
+Then, use the R script `R/compute_stats.R`. The chunk size selected in the last run of the previous command is used to compute statistics for each flight mission.
 ```bash
-Rscript R/compute_stats.R <point_clouds_dir> <time> <height> <area> <chunk_size>
+Rscript R/compute_stats.R <point_clouds_dir> <time> <height> <area>
 ```
 
 `point_clouds_dir`
