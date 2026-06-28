@@ -14,3 +14,4 @@ R/deprecated
 results/grids/**/*.png
 .Rproj.user
 Rplots.pdf
+.Rhistory
