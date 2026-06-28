@@ -9,9 +9,14 @@ paper/ISPRS_congress/action_required_message.txt
 paper/ISPRS_congress/copyright_confirmation.txt
 paper/ISPRS_congress/isprs_fullpaper_highlighted.pdf
 paper/ISPRS_congress/ISPRSabstract_formatted.doc
-paper/ISPRS_congress/poster.svg
-R/deprecated
+paper/ISPRS_congress/poster/poster.svg
+R/*
+!R/*.R
+!R/*.qmd
 results/grids/**/*.png
+results/reports/**
+!results/reports/**/
+!results/reports/**/*.pdf
 .Rproj.user
 Rplots.pdf
 .Rhistory

@@ -1,0 +1,183 @@
+---
+title: "Day/Night comparison"
+author:
+  - Cristian Iranzo
+  - Koreen Millard
+  - Nicholas Pontone
+date: "`r Sys.Date()`"
+date-format: "MMMM YYYY"
+format:
+  pdf:
+    toc: true
+    toc-title: "Index"
+    colorlinks: true
+    geometry:
+      - top=30mm
+      - left=30mm
+      - right=30mm
+      - bottom=30mm
+
+params:
+  area: "alfred"
+  outdir: "results/reports"
+---
+# Report for `r params$area`
+
+```{r create-global-vars}
+#| echo: false
+#| output: false
+
+library(lidaynight)
+
+# Get the path of the directory containing the actual file
+# Working directory: save graphics
+fpath_dir <- knitr::current_input(dir = TRUE)
+# fpath_dir <- getwd()
+
+# Project directory
+ROOT <- normalizePath(file.path(fpath_dir, '..', '..'), mustWork = FALSE)
+
+# Stats directory: current mission statistics
+SDIR <- file.path(ROOT, "results", "stats", params$area)
+
+stats_files <- basename(list.files(SDIR, "*.csv$", recursive=TRUE))
+available_stats_files <- names(table(stats_files))
+```
+
+```{r save-img-fc}
+#| echo: false
+#| output: false
+save_custom_plot <- function(plot_obj, out_path) {
+  
+  ggplot2::ggsave(
+    filename = out_path,
+    plot = plot_obj,
+    device = tools::file_ext(out_path),
+    width = 10,
+    height = 5,
+    units = "in"
+  )
+}
+```
+
+## ROI metrics
+
+```{r roi-metrics}
+#| echo: false
+#| fig-cap: "ROI metrics"
+#| out-width: "100%"
+#| warning: false
+
+if (!"roi_stats.csv" %in% available_stats_files) {
+  cat("There are no available ROI stats files.")
+} else {
+  stats_wide <- load_all_statistics(SDIR, "roi_stats")
+  stats_long <- reshape_statistics_long(stats_wide)
+  p <- make_dodged_barplot(stats_long)
+  
+  
+  fig_dir <- normalizePath(file.path(params$outdir))
+  if (!dir.exists(fig_dir)) {
+    dir.create(fig_dir, recursive = TRUE)
+  }
+
+  fig_path_svg <- file.path(fig_dir, "roi_metrics.svg")
+  fig_path_png <- file.path(fig_dir, "roi_metrics.png")
+
+  save_custom_plot(p, fig_path_svg)
+  save_custom_plot(p, fig_path_png)
+
+  knitr::include_graphics(fig_path_png)
+}
+```
+
+## Target level metrics
+
+```{r target-metrics-fc}
+#| echo: false
+#| output: false
+
+process_target_metrics <- function(prefix) {
+  stats_wide <- load_all_statistics(SDIR, prefix)
+  stats_long <- reshape_statistics_long(stats_wide)
+  p <- make_violin_plot(stats_long)
+  
+  fig_dir <- file.path(params$outdir)
+
+  if (!dir.exists(fig_dir)) {
+    dir.create(fig_dir, recursive = TRUE)
+  }
+
+  fig_path_svg <- file.path(fig_dir, paste0(prefix, ".svg"))
+  fig_path_png <- file.path(fig_dir, paste0(prefix, ".png"))
+
+  save_custom_plot(p, fig_path_svg)
+  save_custom_plot(p, fig_path_png)
+
+  knitr::include_graphics(fig_path_png)
+}
+```
+
+### Open treed
+
+```{r open-treed-metrics}
+#| echo: false
+#| fig-cap: "Open treed metrics"
+#| out-width: "100%"
+#| warning: false
+
+open_prefix <- "bytarget_gf_open_treed"
+if (!paste0(open_prefix, ".csv") %in% available_stats_files) {
+  cat("There are not available open treed stats files.")
+} else {
+  process_target_metrics(open_prefix)
+}
+```
+
+### Dense treed
+
+```{r dense-treed-metrics}
+#| echo: false
+#| fig-cap: "Dense treed metrics"
+#| out-width: "100%"
+#| warning: false
+
+dense_prefix <- "bytarget_gf_dense_treed"
+if (!paste0(dense_prefix, ".csv") %in% available_stats_files) {
+  cat("There are not available dense treed stats files.")
+} else {
+  process_target_metrics(dense_prefix)
+}
+```
+
+### Shruby areas
+
+```{r shrub-metrics}
+#| echo: false
+#| fig-cap: "Shrub metrics"
+#| out-width: "100%"
+#| warning: false
+
+shrub_prefix <- "bytarget_gf_shrub"
+if (!paste0(shrub_prefix, ".csv") %in% available_stats_files) {
+  cat("There are not available shrub stats files.")
+} else {
+  process_target_metrics(shrub_prefix)
+}
+```
+
+### Road
+
+```{r road-metrics}
+#| echo: false
+#| fig-cap: "Road metrics"
+#| out-width: "100%"
+#| warning: false
+
+road_prefix <- "bytarget_gf_road"
+if (!paste0(road_prefix, ".csv") %in% available_stats_files) {
+  cat("There are not available road stats files.")
+} else {
+  process_target_metrics(road_prefix)
+}
+```
