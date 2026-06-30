@@ -20,3 +20,4 @@ results/reports/**
 .Rproj.user
 Rplots.pdf
 .Rhistory
+sync.ffs_db
