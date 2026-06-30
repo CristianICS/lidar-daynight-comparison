@@ -108,10 +108,9 @@ The second step is retiling the mission `LAZ` files. Use `R/define_grid_size.R` 
 Rscript R/define_grid_size.R <point_clouds_dir> <time> <height> <area> <chunk_size>
 ```
 
-Then, use the R script `R/compute_stats.R` with the selected chunk size to compute the statistics for each flight mission.
-
+Then, use the R script `R/compute_stats.R`. The chunk size selected in the last run of the previous command is used to compute statistics for each flight mission.
 ```bash
-Rscript R/compute_stats.R <point_clouds_dir> <time> <height> <area> <chunk_size>
+Rscript R/compute_stats.R <point_clouds_dir> <time> <height> <area>
 ```
 
 `point_clouds_dir`
@@ -166,6 +165,20 @@ results/
 The ROI-level metrics are stored as a `csv` and `gpkg`, linked to the AOI that was used in the last one.
 
 For the target-level metrics, there is one file per class included in the targets (see section [Target-level metrics](#target-level-metrics)). A GeoPackage file is created for each target class. It contains the target-level metrics and the corresponding geometries. A final `byclass_gf.csv` file is computed aggregating the errors from the targets of each class.
+
+### Render the reports
+
+The final step is to generate the reports for each area. Once the statistics have been created, run the following command in the terminal:
+
+```bash
+Rscript R/render_report.R <area>
+```
+
+This will populate the `report.qmd` file with the statistics. Currently, only some statistics are available: percentages from ROI-level statistics, and average intensity and RMSE from target-level statistics.
+
+ROI-level statistics are shown as dodged bar plots, while target-level metrics are shown as violin plots representing the distribution of all available ground reference points.
+
+Reports for currently processed sites can be found in the `results/reports/<area>` folder.
 
 ## Comparison metrics
 
