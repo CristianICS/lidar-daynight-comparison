@@ -83,7 +83,7 @@ Notes:
 * Heights: ellipsoidal
 * Flight speed: 1.9 m/s
 <!-- * Local working data path:
-  `W:/koreen/Koreen Alfred Processing/corrected LAS no GCPs` -->
+  `Z:/Spanish sites/Results/Artieda` -->
 
 | Height | Moment    | Date       | Time UTC | Local time |
 | -----: | --------- | ---------- | -------: | ---------: |
