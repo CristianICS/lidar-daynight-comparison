@@ -34,6 +34,7 @@ TODO: Add peer-reviewed references on the effect of temperature, humidity, water
 
 * Coordinate reference system: `EPSG:32620`
 * Heights: ellipsoidal
+* Flight speed: 3.1 m/s
 <!-- * Local working data path:
   `W:/koreen/Koreen_DayNight_LiDAR_Quinces/corrected LAS` -->
 
@@ -58,6 +59,7 @@ Notes:
 
 * Coordinate reference system: `EPSG:32618`
 * Heights: ellipsoidal
+* Flight speed: 3.1 m/s
 <!-- * Local working data path:
   `W:/koreen/Koreen Alfred Processing/corrected LAS no GCPs` -->
 
@@ -74,6 +76,33 @@ Notes:
 
 * The 40 m nighttime flight at Alfred was incomplete.
 * The 100 m nighttime flight had orthometric heights. It was reprocessed to obtain ellipsoidal heights.
+
+### Artieda ravine
+
+* Coordinate reference system: `EPSG:32630`
+* Heights: ellipsoidal
+* Flight speed: 1.9 m/s
+<!-- * Local working data path:
+  `W:/koreen/Koreen Alfred Processing/corrected LAS no GCPs` -->
+
+| Height | Moment    | Date       | Time UTC | Local time |
+| -----: | --------- | ---------- | -------: | ---------: |
+|   40 m | Afternoon | 2025-09-09 |    17:30 |      19:30 |
+|   75 m | Afternoon | 2025-09-09 |    18:02 |      20:02 |
+|  100 m | Afternoon | 2025-09-09 |    17:46 |      19:46 |
+|   40 m | Night     | 2025-09-09 |    21:50 |      23:50 |
+|   75 m | Night     | 2025-09-10 |    22:17 |      00:17 |
+|  100 m | Night     | 2025-09-09\* |    22:06 |      00:06 |
+
+\* The 100m night mission started the day ninth and finished during day tenth.
+
+Notes:
+
+* The 40 m and 100 m day/night flights were completed with one set of batteries.
+* The drone did not land between those flights, but recalibration was performed for both.
+* The 75 m day/night flight was completed separately.
+* Wind speed was approximately 5 m/s.
+* Flights were again flown at 1.9 m/s because the speed could not be changed.
 
 ## GNSS and trajectory processing notes
 
@@ -269,6 +298,8 @@ The following field notes are retained for traceability.
 
 <details>
 <summary>Spanish campaign notes</summary>
+
+September, 2025
 
 ### Day 8 — Encinacorba night
 
