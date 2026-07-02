@@ -37,7 +37,7 @@ if (!height %in% height_opts) {
   )
 }
 
-area_opts <- c("alfred", "quinces")
+area_opts <- c("alfred", "quinces", "artieda")
 if (!area %in% area_opts) {
   stop(
     "\nInvalid <area> parameter '", area,
