@@ -1,0 +1,3 @@
+"class","n_targets","n_targets_with_last","n_pnts_last","sum_errs_last","sum_errs_last_sq","rmse_last","bias_last"
+"open_treed",23,4,52,2.42114349450844,1.20852784271149,0.152449729590262,0.04656045181747
+"dense_treed",93,64,693,-404.491145352029,2006.03965701327,1.7013871163813,-0.583681306424285
