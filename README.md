@@ -104,6 +104,19 @@ Notes:
 * Wind speed was approximately 5 m/s.
 * Flights were again flown at 1.9 m/s because the speed could not be changed.
 
+### Encinacorba - hillside
+
+* Coordinate reference system: `EPSG:32630`
+* Heights: ellipsoidal
+* Flight speed: 3.1 m/s
+<!-- * Local working data path:
+  Z:\Spanish sites\Results\Encinacorba\encinacorba_burnt_hillside -->
+
+| Height | Moment    | Date       | Time UTC | Local time |
+| -----: | --------- | ---------- | -------: | ---------: |
+|   40 m | Night | 2025-09-10 |     19:43 |      21:43 |
+
+
 ## GNSS and trajectory processing notes
 
 The LiDAR data were processed with PPP using base station RINEX files recorded for up to 3 hours (Canadian sites) and national NTRIP corrections (Spanish sites).
@@ -113,15 +126,37 @@ A GNSS validation point dataset was collected at each site using a Stonex GNSS s
 
 ## Setting a common flight mission area
 
-The overlap between HESAI flightlines is irregular. To ensure that missions are compared over equivalent areas, an area of interest (AOI) was created for each mission site using only zones with common flightline overlap.
+Run the following script to create a common flight mission area:
 
-The AOI files are stored in:
-
-```text
-data/metadata/flights_common_overlap.gpkg
+```bash
+Rscript R/common_aoi.R <point_clouds_dir> <area> <pnts_filter>
 ```
 
-TODO: Check and upload the script used to generate the AOIs.
+`point_clouds_dir`
+
+Folder containing the processed mission `LAZ` files. There must be one folder per combination of acquisition time and flight altitude. These subfolders must be named using the format `<time>_<height>`.
+
+`area`
+
+Study area. Accepted values are:
+
+`pnts_filter`
+
+Logical value, either `TRUE` or `FALSE`.
+
+If set to `TRUE`, the final common AOI is restricted to polygons that intersect ground reference target points. If set to `FALSE`, the final common AOI is created only from the overlap structure of the flight missions.
+
+### Method
+
+The overlap between HESAI flightlines is irregular. To ensure that missions are compared over equivalent areas, an area of interest (AOI) was created for each mission site using only zones with common flightline overlap.
+
+For each mission, the `LAZ`/`LAS` tile footprints were extracted from the `lidR` `LAScatalog`. The tile footprints were then intersected to compute the number of overlapping tiles in each polygon. Only polygons with more than four overlapping tiles were retained. These polygons represent areas with sufficient within-mission flightline overlap.
+
+The retained polygons were dissolved within each mission to create one overlap-based AOI per mission. These mission-level AOIs were then intersected across all missions to identify areas consistently covered by all missions. The final common AOI was defined as the polygons where the number of overlapping mission-level AOIs was equal to the total number of missions.
+
+When `pnts_filter = TRUE`, the common AOI is further restricted to the validation area by retaining only common AOI polygons that intersect ground reference target points. The selected polygons are then dissolved into a single final AOI layer.
+
+This workflow ensures that downstream point cloud metrics are calculated over the same spatial extent for all missions and only in areas with sufficient flightline overlap.
 
 ## Processing workflow
 
@@ -133,7 +168,7 @@ devtools::install_github("CristianICS/lidaynight")
 
 The second step is retiling the mission `LAZ` files. Use `R/define_grid_size.R` to find a good size to retile with:
 
-```
+```bash
 Rscript R/define_grid_size.R <point_clouds_dir> <time> <height> <area> <chunk_size>
 ```
 
