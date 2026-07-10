@@ -36,7 +36,7 @@ if (!height %in% height_opts) {
   )
 }
 
-area_opts <- c("alfred", "quinces", "artieda")
+area_opts <- c("alfred", "quinces", "artieda", "alfred_lo")
 if (!area %in% area_opts) {
   stop(
     "\nInvalid <area> parameter '", area,
@@ -57,7 +57,7 @@ mission_folder <- paste(time, height, sep="_")
 FMPATH <- file.path(point_clouds_dir, mission_folder)
 
 # Area of interest
-aoi_layer <- paste0(area, "_100_40")
+aoi_layer <- paste0(area, "_common")
 AOIPATH <- file.path(ROOT, "data/metadata/flights_common_overlap.gpkg")
 
 # Ground reference path
