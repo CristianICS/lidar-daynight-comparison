@@ -15,7 +15,7 @@ area <- args[[2]]
 pnts_filter <- as.logical(args[[3]])
 
 
-area_opts <- c("alfred", "quinces", "artieda")
+area_opts <- c("alfred", "alfred_lo", "quinces", "artieda")
 if (!area %in% area_opts) {
   stop(
     "\nInvalid <area> parameter '", area,
@@ -41,6 +41,11 @@ data_folder <- file.path(getwd(), "data", "metadata")
 extract_gt4_aoi <- function(mission_name, point_cloud_dir, area) {
 
   ctg_path <- file.path(point_cloud_dir, mission_name)
+  if (!dir.exists(ctg_path)) {
+    warning(paste("The mission folder does not exist: ", mission_name))
+    return(NULL)
+  }
+
   ctg <- lidR::readLAScatalog(ctg_path)
 
   tiles <- sf::st_sf(
@@ -74,7 +79,7 @@ extract_gt4_aoi <- function(mission_name, point_cloud_dir, area) {
 
   sf::st_write(
     gt4_aoi,
-    file.path(data_folder, "flights_common_aoi_for_target_metrics.gpkg"),
+    file.path(data_folder, "flights_common_aoi.gpkg"),
     layer = paste0(area, "_", mission_name),
     delete_layer = TRUE,
     quiet=TRUE
@@ -94,7 +99,7 @@ mission_gt4_list <- lapply(
 mission_gt4_list <- Filter(Negate(is.null), mission_gt4_list)
 
 if (length(mission_gt4_list) < length(missions)) {
-  stop("At least one mission has no gt4 AOI. Common AOI across all missions cannot be computed.")
+  warning("At least one required mission has no gt4 AOI.")
 }
 
 mission_gt4_aoi <- dplyr::bind_rows(mission_gt4_list)
@@ -146,7 +151,7 @@ common_gt4_aoi_dissolved <- sf::st_make_valid(common_gt4_aoi_dissolved)
 # Save output
 sf::st_write(
   common_gt4_aoi_dissolved,
-  file.path(data_folder, "flights_common_aoi_for_global_metrics.gpkg"),
-  layer = area,
+  file.path(data_folder, "flights_common_aoi.gpkg"),
+  layer = paste0(area, "_common"),
   delete_layer = TRUE
 )
