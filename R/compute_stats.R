@@ -58,7 +58,7 @@ FMPATH <- file.path(point_clouds_dir, mission_folder)
 
 # Area of interest
 aoi_layer <- paste0(area, "_common")
-AOIPATH <- file.path(ROOT, "data/metadata/flights_common_overlap.gpkg")
+AOIPATH <- file.path(ROOT, "data/metadata/flights_common_aoi.gpkg")
 
 # Ground reference path
 gr_fname <- "ground_reference_targets.gpkg"
