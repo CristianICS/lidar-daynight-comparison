@@ -97,8 +97,8 @@ mission_gt4_list <- lapply(
 )
 
 mission_gt4_list <- Filter(Negate(is.null), mission_gt4_list)
-
-if (length(mission_gt4_list) < length(missions)) {
+computed_missions <- length(mission_gt4_list)
+if (computed_missions < length(missions)) {
   warning("At least one required mission has no gt4 AOI.")
 }
 
@@ -113,7 +113,7 @@ mission_overlap_count <- mission_overlap_count |>
 
 # Keep areas shared by all missions
 common_gt4_aoi <- mission_overlap_count |>
-  dplyr::filter(n_mission_overlaps == length(missions))
+  dplyr::filter(n_mission_overlaps == computed_missions)
 
 common_gt4_aoi <- sf::st_make_valid(common_gt4_aoi)
 
