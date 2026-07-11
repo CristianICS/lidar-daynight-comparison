@@ -6,7 +6,7 @@ if (length(args) < 1) {
 
 area <- args[1]
 
-allowed_areas <- c("alfred", "quinces")
+allowed_areas <- c("alfred", "alfred_lo", "quinces")
 
 if (!area %in% allowed_areas) {
   stop(
