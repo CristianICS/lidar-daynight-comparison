@@ -61,7 +61,8 @@ Notes:
 * Heights: ellipsoidal
 * Flight speed: 3.1 m/s
 <!-- * Local working data path:
-  `W:/koreen/Koreen Alfred Processing/corrected LAS no GCPs` -->
+   * `W:/koreen/Koreen Alfred Processing/corrected LAS no GCPs`
+   * `Z:/Alfred/lidar/AlfredLeafOff` -->
 
 | Height | Moment    | Date       | Time UTC | Local time |
 | -----: | --------- | ---------- | -------: | ---------: |
@@ -71,11 +72,17 @@ Notes:
 |   40 m | Night     | 2025-06-13 |    04:15 |      23:15 |
 |   75 m | Night     | 2025-06-13 |    05:58 |      00:58 |
 |  100 m | Night     | 2025-06-13 |    03:38 |      22:38 |
+|  100 m LO | Day | 2026-05-01 | 21:25 | 17:25 |
+|  100 m LO | Night | 2026-05-02| 01:57 | 21:57 |
+|  75 m LO | Day | 2026-05-01 | 22:55 | 18:55 |
 
 Notes:
 
 * The 40 m nighttime flight at Alfred was incomplete.
 * The 100 m nighttime flight had orthometric heights. It was reprocessed to obtain ellipsoidal heights.
+* LO means *Leaf Off* condition
+* The time for the LO flights was extracted from the Balko reports.
+* Common overlap AOI for LO missions is the one computed for the first missions.
 
 ### Artieda ravine
 
@@ -104,17 +111,57 @@ Notes:
 * Wind speed was approximately 5 m/s.
 * Flights were again flown at 1.9 m/s because the speed could not be changed.
 
-### Encinacorba - hillside
+### Encinacorba - burnt hillside
 
 * Coordinate reference system: `EPSG:32630`
 * Heights: ellipsoidal
 * Flight speed: 3.1 m/s
 <!-- * Local working data path:
-  Z:\Spanish sites\Results\Encinacorba\encinacorba_burnt_hillside -->
+  Z:\Spanish sites\Results\Encinacorba\burnt_hillside -->
 
 | Height | Moment    | Date       | Time UTC | Local time |
 | -----: | --------- | ---------- | -------: | ---------: |
 |   40 m | Night | 2025-09-10 |     19:43 |      21:43 |
+|   75 m | Night | 2025-09-10 |     20:03 |      22:03 |
+|  100 m | Night | 2025-09-10 |     19:55 |      21:55 |
+|  40 m | Day | 2025-09-11 |     14:39 |      16:39 |
+|  75 m | Day | 2025-09-11 |     14:49 |      16:49 |
+|  100 m | Day | 2025-09-11 |     14:56 |      16:56 |
+
+### Encinacorba - burnt hillside (lower speed)
+
+* Coordinate reference system: `EPSG:32630`
+* Heights: ellipsoidal
+* Flight speed: 1.9 m/s
+<!-- * Local working data path:
+  Z:\Spanish sites\Results\Encinacorba\burnt_hillside_high_speed -->
+
+| Height | Moment    | Date       | Time UTC | Local time |
+| -----: | --------- | ---------- | -------: | ---------: |
+|   40 m | Night | 2025-09-08 |     21:59 |      23:59 |
+|   75 m | Night | 2025-09-09 |     22:54 |      00:54 |
+|  100 m | Night | 2025-09-08 |     21:24 |      23:24 |
+|   40 m | Day   | 2025-09-11 |     15:20 |      17:20 |
+|   75 m | Day   | 2025-09-11 |     15:56 |      17:56 |
+|  100 m | Day   | 2025-09-11 |     15:38 |      17:38 |
+
+
+### Encinacorba - scenery
+
+* Coordinate reference system: `EPSG:32630`
+* Heights: ellipsoidal
+* Flight speed: 3.1 m/s
+<!-- * Local working data path:
+  Z:\Spanish sites\Results\Encinacorba\scenery -->
+
+| Height | Moment    | Date       | Time UTC | Local time |
+| -----: | --------- | ---------- | -------: | ---------: |
+|   40 m | Night | 2025-09-10 |     21:11 |      23:11 |
+|   75 m | Night | 2025-09-10 |     21:22 |      23:22 |
+|  100 m | Night | 2025-09-10 |     21:31 |      23:31 |
+|   40 m | Day   | 2025-09-11 |     11:56 |      13:56 |
+|   75 m | Day   | 2025-09-11 |     12:18 |      14:18 |
+|  100 m | Day   | 2025-09-11 |     12:08 |      14:08 |
 
 
 ## GNSS and trajectory processing notes
@@ -338,6 +385,8 @@ September, 2025
 
 ### Day 8 — Encinacorba night
 
+#### Burnt hillside site
+
 * Payload was calibrated before starting the 100 m flight.
 * Wind speed was approximately 6–9 m/s.
 * Flights were accidentally flown at 1.9 m/s.
@@ -355,7 +404,7 @@ September, 2025
 
 ### Day 10 — Encinacorba night
 
-#### Steep slope site
+#### Burnt hillside site
 
 * Flights were flown at 3.1 m/s.
 * All missions were completed with one set of batteries.
@@ -363,18 +412,17 @@ September, 2025
 * A second calibration was not performed at the start of the next mission because the missions were continuous.
 * Wind speed was low, approximately 0–1 m/s.
 
-#### Mountain edge site
+#### Scenery site
 
 * The 40 m and 100 m flights were completed first.
 * The drone then landed and batteries were changed before the 75 m flight.
-* Calibrations were performed in the same way as at the steep slope site.
+* Calibrations were performed in the same way as at the burnt hillside site.
 * Wind speed was high at times, approximately 7–11 m/s.
 
 ### Day 11 — Encinacorba day
 
-#### Steep slope site
+#### Burnt hillside site
 
-* The first flight failed because the camera was not turned on.
 * The 40 m, 75 m, and 100 m flights were completed with one set of batteries.
 * Flights were flown at 3.1 m/s.
 * Another set of 40 m and 100 m flights was flown at 1.9 m/s with one set of batteries, followed by the 75 m flight with another battery set.
@@ -382,10 +430,11 @@ September, 2025
 
 #### Scenery site
 
+* The first flight failed because the camera was not turned on.
 * RTK data were collected.
 * TODO: Add the pole height correction of 1.8 m to the RTK data.
 * The 40 m, 75 m, and 100 m flights were flown at 3.1 m/s.
-* All three flights were completed with one set of batteries.
+* The 40 m, 75 m, and 100 m flights were completed with one set of batteries.
 
 ### Operational workflow
 
@@ -404,6 +453,7 @@ September, 2025
 ## Known issues and TODOs
 
 * Confirm the correct UTC time for the Quinces 100 m daytime flight.
+* Confirm the correct mission times for the Alfred leaf off flights.
 * Add peer-reviewed references on atmospheric effects on LiDAR intensity.
 * Add met station characteristics
 
