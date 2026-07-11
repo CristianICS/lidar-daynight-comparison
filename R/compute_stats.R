@@ -88,3 +88,7 @@ fmpath_cls <- groundClassification(fmpath_retiled, overwrite=FALSE)
 # Compute ground reference statistics for each ground reference target
 # ------------------------------------------------------------------------------
 targetStats(fmpath_cls, GRPATH, "Height", "Code", area, out_folder = STATSPATH)
+
+# Remove all objects from the global environment and release unused memory
+rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv)
+gc()
