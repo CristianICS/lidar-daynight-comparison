@@ -42,7 +42,8 @@ area_opts <- c(
   "alfred_lo",
   "quinces",
   "artieda",
-  "encinacorba_hillside"
+  "encinacorba_hillside",
+  "encinacorba_scenery"
 )
 if (!area %in% area_opts) {
   stop(

@@ -20,7 +20,8 @@ area_opts <- c(
   "alfred_lo",
   "quinces",
   "artieda",
-  "encinacorba_hillside"
+  "encinacorba_hillside",
+  "encinacorba_scenery"
 )
 
 if (!area %in% area_opts) {
@@ -111,8 +112,9 @@ if (computed_missions < length(missions)) {
 
 # Check CRS for all the missions
 # Encinacorba hillside mission contains two different CRS
-# get_crs <- function(x) {sf::st_crs(x)$epsg}
-# crs_list <- lapply(mission_gt4_list, get_crs)
+get_crs <- function(x) {paste0(sf::st_crs(x)$epsg, " ")}
+crs_list <- lapply(mission_gt4_list, get_crs)
+message(paste0("AOI CRSs: ", crs_list))
 if (area == "encinacorba_hillside") {
   mission_gt4_list <- lapply(mission_gt4_list, sf::st_transform, crs=32630)
 }
