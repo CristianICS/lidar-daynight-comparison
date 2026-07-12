@@ -15,7 +15,14 @@ area <- args[[2]]
 pnts_filter <- as.logical(args[[3]])
 
 
-area_opts <- c("alfred", "alfred_lo", "quinces", "artieda")
+area_opts <- c(
+  "alfred",
+  "alfred_lo",
+  "quinces",
+  "artieda",
+  "encinacorba_hillside"
+)
+
 if (!area %in% area_opts) {
   stop(
     "\nInvalid <area> parameter '", area,
@@ -100,6 +107,14 @@ mission_gt4_list <- Filter(Negate(is.null), mission_gt4_list)
 computed_missions <- length(mission_gt4_list)
 if (computed_missions < length(missions)) {
   warning("At least one required mission has no gt4 AOI.")
+}
+
+# Check CRS for all the missions
+# Encinacorba hillside mission contains two different CRS
+# get_crs <- function(x) {sf::st_crs(x)$epsg}
+# crs_list <- lapply(mission_gt4_list, get_crs)
+if (area == "encinacorba_hillside") {
+  mission_gt4_list <- lapply(mission_gt4_list, sf::st_transform, crs=32630)
 }
 
 mission_gt4_aoi <- dplyr::bind_rows(mission_gt4_list)
