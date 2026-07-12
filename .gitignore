@@ -13,6 +13,7 @@ paper/ISPRS_congress/poster/poster.svg
 R/*
 !R/*.R
 !R/*.qmd
+R/compute_graphics_internal.R
 results/grids/**/*.png
 results/reports/**
 !results/reports/**/
