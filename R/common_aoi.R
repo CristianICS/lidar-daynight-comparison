@@ -115,7 +115,7 @@ if (computed_missions < length(missions)) {
 get_crs <- function(x) {paste0(sf::st_crs(x)$epsg, " ")}
 crs_list <- lapply(mission_gt4_list, get_crs)
 message(paste0("AOI CRSs: ", crs_list))
-if (area == "encinacorba_hillside") {
+if (area %in% c("encinacorba_hillside", "artieda")) {
   mission_gt4_list <- lapply(mission_gt4_list, sf::st_transform, crs=32630)
 }
 
