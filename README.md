@@ -1,4 +1,11 @@
-# Day–Night LiDAR Flight Comparison
+---
+title: "Day-Night LiDAR Flight Comparison"
+keywords:
+  - LiDAR
+  - DayvsNight
+  - Project
+---
+# Day-Night LiDAR Flight Comparison
 
 This repository contains scripts, notes, and workflow documentation for comparing drone-based LiDAR acquisitions collected during daytime and nighttime flights.
 
@@ -167,7 +174,8 @@ Notes:
 ## GNSS and trajectory processing notes
 
 The LiDAR data were processed with PPP using base station RINEX files recorded for up to 3 hours (Canadian sites) and national NTRIP corrections (Spanish sites).
- The base station location was PPP-corrected and then updated during trajectory correction.
+
+The base station location was PPP-corrected and then updated during trajectory correction.
 
 A GNSS validation point dataset was collected at each site using a Stonex GNSS station (Canadian sites) and Emlid GNSS (Spanish sites). These validation points are used for evaluating vertical accuracy.
 
@@ -253,7 +261,7 @@ For each mission, `compute_stats.R` performs the following steps:
 3. Classify ground points in each chunk using the Progressive TIN Densification (PTD) algorithm.[^1]
 4. Compute target-level metrics using ground-classified points and GNSS reference height data.
 
-Target-level statistics are computed using all ground-classified points within a 50 cm radius of each GNSS reference point.
+Target-level statistics are computed using all ground-classified points within a 25, 50, 75 and 100 cm radius of each GNSS reference point.
 
 [^1]: Progressive TIN Densification (PTD). [Axelsson (2000)](https://www.isprs.org/proceedings/xxxiii/congress/part4/111_xxxiii-part4.pdf)
 
@@ -456,6 +464,10 @@ September, 2025
 * Confirm the correct mission times for the Alfred leaf off flights.
 * Add peer-reviewed references on atmospheric effects on LiDAR intensity.
 * Add met station characteristics
+* Run tests to see how many NA data we have with different buffer thresholds
+* Check how decimal places have the coordinates we're using to filter the duplicated points
+* Do the tests by site, time and flight altitude, for example, on test for Alfred 40m day vs night
+* kruskal wallace - bonneferoni correction (corrects for doing multiple tests)
 
 ## References
 
