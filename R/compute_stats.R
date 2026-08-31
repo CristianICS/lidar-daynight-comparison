@@ -3,10 +3,10 @@ library(lidaynight)
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 4) {
+if (length(args) != 5) {
   stop(
-    "Usage: Rscript compute_stats.R <point_clouds_dir> <time> <height> <area>",
-    "\nExample: Rscript <script>.R W/pclouds day 100 alfred",
+    "Usage: Rscript compute_stats.R <point_clouds_dir> <time> <height> <area> <buffer_m>",
+    "\nExample: Rscript <script>.R \"W/pclouds\" day 100 alfred 0.5",
     call. = FALSE
   )
 }
@@ -15,6 +15,9 @@ if (length(args) != 4) {
 time <- args[[2]]
 height <- args[[3]]
 area <- args[[4]]
+
+# Buffer radius to compute the target metrics
+buffer_m <- as.numeric(args[[5]])
 
 point_clouds_dir <- args[[1]]
 
@@ -94,7 +97,15 @@ fmpath_cls <- groundClassification(fmpath_retiled, overwrite=FALSE)
 
 # Compute ground reference statistics for each ground reference target
 # ------------------------------------------------------------------------------
-targetStats(fmpath_cls, GRPATH, "Height", "Code", area, out_folder = STATSPATH)
+targetStats(
+  fmpath_cls,
+  GRPATH,
+  "Height",
+  "Code",
+  area,
+  buffer_m = buffer_m,
+  out_folder = STATSPATH
+)
 
 # Remove all objects from the global environment and release unused memory
 rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv)
