@@ -228,8 +228,9 @@ Rscript R/define_grid_size.R <point_clouds_dir> <time> <height> <area> <chunk_si
 ```
 
 Then, use the R script `R/compute_stats.R`. The chunk size selected in the last run of the previous command is used to compute statistics for each flight mission.
+
 ```bash
-Rscript R/compute_stats.R <point_clouds_dir> <time> <height> <area>
+Rscript R/define_grid_size.R <point_clouds_dir> <time> <height> <area> <buffer_m>
 ```
 
 `point_clouds_dir`
@@ -247,6 +248,10 @@ Flight altitude: `40`, `75`, or `100`.
 `area`
 
 Study area. Current options are `alfred` and `quinces`.
+
+`buffer_m`
+
+Buffer radius in meters to compute target statistics.
 
 `chunk_size`
 
@@ -276,14 +281,14 @@ results/
         └── <time>_<height>
             ├── roi_stats.csv
             ├── roi_stats.gpkg
-            ├── byclass_gf.csv
-            ├── bytarget_gf_<cls_name>.csv
-            └── bytarget_gf_<cls_name>.gpkg
+            ├── byclass_gf_bf<buffer_m>cm.csv
+            ├── bytarget_gf_<cls_name>_bf<buffer_m>cm.csv
+            └── bytarget_gf_<cls_name>_bf<buffer_m>cm.gpkg
 ```
 
 The ROI-level metrics are stored as a `csv` and `gpkg`, linked to the AOI that was used in the last one.
 
-For the target-level metrics, there is one file per class included in the targets (see section [Target-level metrics](#target-level-metrics)). A GeoPackage file is created for each target class. It contains the target-level metrics and the corresponding geometries. A final `byclass_gf.csv` file is computed aggregating the errors from the targets of each class.
+For the target-level metrics, there is one file per radius buffer and class included in the targets (see section [Target-level metrics](#target-level-metrics)). A GeoPackage file is created for each target class. It contains the target-level metrics and the corresponding geometries. A final `byclass_gf` file is computed aggregating the errors from the targets of each class.
 
 ### Render the reports
 
@@ -312,7 +317,7 @@ The main metrics are:
 | Metric                     | Description                                                                   |
 | -------------------------- | ----------------------------------------------------------------------------- |
 | `n_pnts`                   | Total number of points inside the ROI.                                        |
-| `dup_pnts`                 | Number of duplicated points based on identical `X`, `Y`, and `Z` coordinates. |
+| `dup_pnts`                 | Number of duplicated points computed based on the `lidR::filter_duplicates` approach.|
 | `intensity_avg`            | Mean LiDAR intensity.                                                         |
 | `ret_1`, `ret_2`, `ret_3`  | Number of first, second, and third returns.                                   |
 | `ret_single`               | Number of points from pulses with only one return.                            |
@@ -324,6 +329,8 @@ The main metrics are:
 | `pnts_height_gt_q99`       | Number of points above the 99th height percentile.                            |
 
 Percentage versions of count-based metrics are added automatically using `add_pct_metrics()`. These columns use the suffix `_pct` and are calculated relative to `n_pnts`.
+
+Since `dup_pnts` is computed on ROIs that merge points from multiple flightline LAZ files, its exact-match duplicate detection is only reliable if every source file shares the same coordinate scale factor. Use `check_scale_factors()` to verify this for a folder of LAZ files before trusting `dup_pnts`. If `dup_pnts` was computed from files with inconsistent scale factors, the reported value is an undercount: duplicated points quantized under different scale factors can decode to slightly different coordinates and go unflagged.
 
 ### Target-level metrics
 
@@ -464,8 +471,7 @@ September, 2025
 * Confirm the correct mission times for the Alfred leaf off flights.
 * Add peer-reviewed references on atmospheric effects on LiDAR intensity.
 * Add met station characteristics
-* Run tests to see how many NA data we have with different buffer thresholds
-* Check how decimal places have the coordinates we're using to filter the duplicated points
+* Run tests to see how many NA data we have with different buffer radius (25, 50, 75 and 100 cm)
 * Do the tests by site, time and flight altitude, for example, on test for Alfred 40m day vs night
 * kruskal wallace - bonneferoni correction (corrects for doing multiple tests)
 
