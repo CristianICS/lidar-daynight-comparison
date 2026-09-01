@@ -218,7 +218,7 @@ This workflow ensures that downstream point cloud metrics are calculated over th
 First, install the custom package containing the functions required for the workflow.
 
 ```R
-devtools::install_github("CristianICS/lidaynight")
+pak::pkg_install("CristianICS/lidaynight")
 ```
 
 The second step is retiling the mission `LAZ` files. Use `R/define_grid_size.R` to find a good size to retile with:
