@@ -124,7 +124,7 @@ Notes:
 * Heights: ellipsoidal
 * Flight speed: 3.1 m/s
 <!-- * Local working data path:
-  Z:\Spanish sites\Results\Encinacorba\burnt_hillside -->
+  Z:\Spanish sites\Results\Encinacorba\encinacorba_hillside -->
 
 | Height | Moment    | Date       | Time UTC | Local time |
 | -----: | --------- | ---------- | -------: | ---------: |
@@ -141,7 +141,7 @@ Notes:
 * Heights: ellipsoidal
 * Flight speed: 1.9 m/s
 <!-- * Local working data path:
-  Z:\Spanish sites\Results\Encinacorba\burnt_hillside_high_speed -->
+  Z:\Spanish sites\Results\Encinacorba\burnt_hillside_low_speed -->
 
 | Height | Moment    | Date       | Time UTC | Local time |
 | -----: | --------- | ---------- | -------: | ---------: |
@@ -159,7 +159,7 @@ Notes:
 * Heights: ellipsoidal
 * Flight speed: 3.1 m/s
 <!-- * Local working data path:
-  Z:\Spanish sites\Results\Encinacorba\scenery -->
+  Z:\Spanish sites\Results\Encinacorba\encinacorba_scenery -->
 
 | Height | Moment    | Date       | Time UTC | Local time |
 | -----: | --------- | ---------- | -------: | ---------: |
