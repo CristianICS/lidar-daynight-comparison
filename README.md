@@ -23,6 +23,14 @@ Nighttime LiDAR flights are expected to have:
 
 These effects may be especially important for lower-power drone LiDAR systems.
 
+| Hypothesis | Metric used | Why |
+| ---------- | --------| -----------------------------------------------------|
+|Higher backscatter intensity| intensity_avg| direct measurement |
+|Increased point density| n_pnts (points landing inside each target buffer)| direct proxy for density at fixed buffer area |
+|More ground returns under vegetation| n_pnts_last, faceted by class| penetration should differ most in shrub/open_treed/dense_treed vs the road control |
+|Data quality across altitude| rmse_last| x-axis is already flight height, so the altitude trend is visible directly |
+|Higher SNR / less solar noise| n_pnts_last_incoherent| closest available proxy |
+
 ## Scientific background
 
 Solar radiation can introduce noise into daytime LiDAR measurements, reducing the quality of the backscatter signal. This effect has been documented in space-based LiDAR studies, where sunlight contamination must be separated from the LiDAR return signal (Sun et al., 2016).
@@ -472,7 +480,7 @@ September, 2025
 * Add peer-reviewed references on atmospheric effects on LiDAR intensity.
 * Add met station characteristics
 * Run tests to see how many NA data we have with different buffer radius (25, 50, 75 and 100 cm)
-* Do the tests by site, time and flight altitude, for example, on test for Alfred 40m day vs night
+* Do the tests by site, time and flight altitude, for example, one test for Alfred 40m day vs night
 * kruskal wallace - bonneferoni correction (corrects for doing multiple tests)
 
 ## References

@@ -23,3 +23,4 @@ Rplots.pdf
 .Rhistory
 sync.ffs_db
 Python/upgrade_target_stats.py
+R/compute_inference_internal.R
