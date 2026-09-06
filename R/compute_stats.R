@@ -83,7 +83,7 @@ grids_folder <- file.path(ROOT, "results", "grids", area, mission_folder)
 grid_params_path  <- file.path(grids_folder, "retile_chunk_params.rds")
 grid_params <- readRDS(grid_params_path)
 
-fmpath_retiled <- retileCatalog(FMPATH, grid_params, n_workers)
+fmpath_retiled <- retileCatalog(FMPATH, grid_params, n_workers = n_workers)
 
 compressLasFolder(fmpath_retiled)
 
