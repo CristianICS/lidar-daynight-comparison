@@ -41,8 +41,6 @@ A related study evaluated day and night performance differences for a space-base
 
 Atmospheric conditions may also influence LiDAR intensity. Temperature, humidity, mist, and fog can affect laser propagation and signal attenuation. For this reason, meteorological station data should be checked for each flight.
 
-TODO: Add peer-reviewed references on the effect of temperature, humidity, water vapour, fog, and aerosols on airborne or terrestrial LiDAR intensity.
-
 ## Study sites and flight inventory
 
 ### Quinces bog
@@ -163,7 +161,7 @@ Notes:
 
 ### Encinacorba - scenery
 
-* Coordinate reference system: `EPSG:32630`
+* Coordinate reference system: `EPSG:32620`
 * Heights: ellipsoidal
 * Flight speed: 3.1 m/s
 <!-- * Local working data path:
@@ -178,6 +176,31 @@ Notes:
 |   75 m | Day   | 2025-09-11 |     12:18 |      14:18 |
 |  100 m | Day   | 2025-09-11 |     12:08 |      14:08 |
 
+## Meteorological data
+
+https://sede.aemet.gob.es/
+
+Estación: Daroca
+Indicativo climatológico: 9390
+Período: 10/09/2025 00:00 - 11/09/2025 23:59
+Resolución: horaria/ valores horarios
+Variables: 
+  - "fint": "Fecha hora final del período de observación"
+  - "prec": "Precipitación acumulada, medida por el pluviómetro"
+  - "pacutp": "Precipitación acumulada, medida por el disdrómetro"
+  - "vmax": "Velocidad máxima del viento"
+  - "vv": "Velocidad media del viento"
+  - "dv": "Dirección media del viento"
+  - "dmax": "Dirección del viento máximo"
+  - "hr": "Humedad relativa instantánea del aire"
+  - "pres": "Presión instantánea al nivel en el que se encuentra instalado el barómetro"
+  - "pres_nmar": "Valor de la presión reducido al nivel del mar"
+  - "ts": "Temperatura suelo"
+  - "ta": "Temperatura instantánea del aire"
+  - "tamin": "Temperatura mínima del aire"
+  - "tamax": "Temperatura máxima del aire"
+  - "tpr": "Temperatura del punto de rocío"
+  - "vis": "Visibilidad"
 
 ## GNSS and trajectory processing notes
 
@@ -490,3 +513,5 @@ Arnqvist, J., Freier, J., & Dellwik, E. (2020). Robust processing of airborne la
 Sun, H., Yang, J., Zhang, Q., Song, L., Gao, H., Jing, X., Lin, G., & Yang, K. (2021). Effects of day/night factor on the detection performance of FY4A Lightning Mapping Imager in Hainan, China. *Remote Sensing, 13*(11), 2200. https://doi.org/10.3390/rs13112200
 
 Sun, W., Hu, Y., MacDonnell, D. G., Weimer, C., & Baize, R. R. (2016). Technique to separate LiDAR signal and sunlight. *Optics Express, 24*(12), 12949. https://doi.org/10.1364/OE.24.012949
+
+
