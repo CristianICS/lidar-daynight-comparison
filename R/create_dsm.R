@@ -3,16 +3,25 @@ library(lidR)
 library(terra)
 
 # Config ----------------------------------------------------------------------
-filter_outliers <- function(laz_path) {
-  laz <- lidR::readLAS(laz_path)
+# Buffer (m) loaded around each tile so points near tile edges get their real
+# neighbours from the adjacent tiles during SOR
+sor_buffer <- 10
+
+filter_outliers <- function(chunk) {
+  laz <- lidR::readLAS(chunk)
+  if (lidR::is.empty(laz)) return(NULL)
 
   # --- Statistical Outlier Removal (SOR) ---
   # Flags points whose average distance to k nearest neighbors
   # is beyond m standard deviations from the mean
   laz <- lidR::classify_noise(laz, lidR::sor(k = 10, m = 3))
 
-  # Remove points classified as noise (class 18)
-  laz_clean <- lidR::filter_poi(laz, laz$Classification != lidR::LASNOISE)
+  # Remove points classified as noise (class 18) and drop buffer points
+  # (buffer == 0 marks core points) before writing
+  laz_clean <- lidR::filter_poi(
+    laz,
+    Classification != lidR::LASNOISE & buffer == 0
+  )
   return(laz_clean)
 }
 
@@ -64,17 +73,20 @@ if (!dir.exists(outliers_dir)) {
   dir.create(outliers_dir)
 }
 
-laz_files <- list.files(cls_path, pattern = ".laz$", full.names = TRUE)
+# Process tile by tile (chunk size 0) with a buffer, keeping the original
+# file names in the output folder
+cls_raw_catalog <- readLAScatalog(cls_path)
+opt_chunk_size(cls_raw_catalog) <- 0
+opt_chunk_buffer(cls_raw_catalog) <- sor_buffer
+opt_output_files(cls_raw_catalog) <- file.path(outliers_dir, "{ORIGINALFILENAME}")
+opt_laz_compression(cls_raw_catalog) <- TRUE
 
-invisible(lapply(laz_files, function(laz_path) {
-  message("Filtering outliers: ", basename(laz_path))
-
-  laz_clean <- filter_outliers(laz_path)
-
-  out_path <- file.path(outliers_dir, basename(laz_path))
-  lidR::writeLAS(laz_clean, out_path)
-  gc()
-}))
+catalog_apply(
+  cls_raw_catalog,
+  filter_outliers,
+  .options = list(need_buffer = TRUE)
+)
+gc()
 
 # Create DEM ----------------------------------------------------------------
 cls_catalog <- readLAScatalog(outliers_dir)
