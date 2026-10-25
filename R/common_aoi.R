@@ -17,7 +17,7 @@ pnts_filter <- as.logical(args[[3]])
 
 area_opts <- c(
   "alfred",
-  "alfred_lo",
+  "alfred_loff",
   "quinces",
   "artieda",
   "encinacorba_hillside",

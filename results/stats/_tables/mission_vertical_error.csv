@@ -1,0 +1,14 @@
+"Site","Altitude (m)","Median bias day (m)","Median bias night (m)","Median RMSE day (m)","Median RMSE night (m)"
+"Alfred",40,0,0.1,0.11,0.15
+"Alfred",75,0,0.11,0.17,0.18
+"Alfred",100,0.1,5.56,0.27,5.56
+"Alfred LOff",100,0.02,0.04,0.11,0.11
+"Encinacorba hillside",40,0.03,-0.05,0.1,0.08
+"Encinacorba hillside",75,0.02,-0.04,0.1,0.08
+"Encinacorba hillside",100,-0.01,-0.05,0.09,0.08
+"Encinacorba scenery",40,0.18,0.14,0.18,0.15
+"Encinacorba scenery",75,0.16,0.13,0.17,0.14
+"Encinacorba scenery",100,0.15,0.13,0.17,0.14
+"Quinces",40,-1.11,-1.1,1.11,1.1
+"Quinces",75,-1.17,-1.08,1.17,1.08
+"Quinces",100,-1.19,0.01,1.19,0.06

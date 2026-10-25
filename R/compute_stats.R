@@ -41,7 +41,7 @@ if (!height %in% height_opts) {
 
 area_opts <- c(
   "alfred",
-  "alfred_lo",
+  "alfred_loff",
   "quinces",
   "artieda",
   "encinacorba_hillside",

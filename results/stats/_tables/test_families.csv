@@ -1,0 +1,5 @@
+"Family","Tests","Sig. (Bonf.)","Sig. (BH)","Night > day (BH)","Day > night (BH)"
+"detection (n_pnts_last > 0)",19,2,4,NA,NA
+"magnitude: intensity_avg",37,12,15,14,1
+"magnitude: prop_last_incoherent",23,6,13,2,11
+"magnitude: rmse_last",37,11,19,7,12
