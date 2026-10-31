@@ -25,13 +25,13 @@ filter_outliers <- function(chunk) {
   return(laz_clean)
 }
 
-point_clouds_dir <- "W:/koreen/Koreen_DayNight_LiDAR_Quinces/corrected LAS"
+point_clouds_dir <- "W:/koreen/Koreen Alfred Processing/corrected LAS no GCPs"
 
 
 # Select the flights and time producing the lower point density point clouds
 height <- 100
 time <- "day"
-area <- "quinces"
+area <- "alfred"
 
 available_areas <- c(
   "alfred",
@@ -90,6 +90,14 @@ gc()
 
 # Create DEM ----------------------------------------------------------------
 cls_catalog <- readLAScatalog(outliers_dir)
+# In case there were more files in the same folder, select the ones without
+# outliers with a custom suffix.
+# target_files <- list.files(
+  # outliers_dir,
+  # pattern = "_outlier_filter.laz",
+  # full.names = TRUE
+# )
+# cls_catalog <- readLAScatalog(target_files)
 
 dtm_path <- file.path(raster_dir, paste(area, "DEM.tif", sep = "_"))
 
@@ -178,8 +186,18 @@ dsm_path <- file.path(raster_dir, paste(area, "nDSM.tif", sep = "_"))
 # Save the processed tiles in R
 opt_output_files(nlas) <- ""
 
+# Select only the point clouds with more than 3 points
+norm_files <- nlas$filename
+
+valid_files <- norm_files[sapply(norm_files, function(f) {
+  las <- readLAS(f)
+  npoints(las) >= 3
+})]
+
+nlas_valid <- readLAScatalog(valid_files)
+
 if (!file.exists(dsm_path)) {
-  dsm <- rasterize_canopy(nlas, res = 0.20, p2r(0.15, na.fill = tin()))
+  dsm <- rasterize_canopy(nlas_valid, res = 0.20, p2r(0.15, na.fill = tin()))
 
   writeRaster(
     dsm,
