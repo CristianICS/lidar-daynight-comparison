@@ -51,7 +51,10 @@ stats_table <- data.frame(
 #     targets.
 #   * returns  -> return-order composition (1st/2nd/3rd, single vs. multiple
 #     returns), a coarse proxy for canopy penetration at the whole-mission
-#     scale, complementing the per-class returns seen in 3.2.
+#     scale, complementing the per-class returns seen in 3.2. Computed over
+#     the points that are neither duplicated nor below zero height (the
+#     `*_clean` columns of roi_stats.csv), so these artifacts are counted
+#     only in their own quality metrics.
 global_stats_long <- load_global_stats(stats_table, areas, "roi_stats.csv")
 global_stats_long <- add_roi_area_m2(global_stats_long, stats_table, areas, "roi_stats.csv")
 
@@ -59,8 +62,8 @@ roi_stat_groups <- list(
   "global_stats.png" = c(
     "Total number of points",
     "Duplicated points (%)",
-    "Points with negative heights (%)",
-    "Outliers"
+    "Points with negative heights (%)"
+    # "Outliers"
   ),
   "global_stats_returns.png" = c(
     "First returns (%)",
@@ -86,17 +89,18 @@ for (out_file in names(roi_stat_groups)) {
   )
 }
 
-# Create target mission site stats - violin plots
 target_stats_long <- load_target_stats(stats_table, areas)
 
-target_stats_plot_1 <- c("intensity_avg", "rmse_last")
-target_stats_plot_2 <- c("n_pnts_last", "n_pnts_last_incoherent", "thickness")
-
-target_plot <- make_violin_plot_custom(target_stats_long, target_stats_plot_1)
-save_custom_plot(target_plot, file.path(OUTDIR, "target_stats.png"))
-
-target_plot <- make_violin_plot_custom(target_stats_long, target_stats_plot_2)
-save_custom_plot(target_plot, file.path(OUTDIR, "target_stats_informative.png"))
+# Create target mission site stats - violin plots (deprecated)
+#
+# target_stats_plot_1 <- c("intensity_avg", "rmse_last")
+# target_stats_plot_2 <- c("n_pnts_last", "n_pnts_last_incoherent", "thickness")
+#
+# target_plot <- make_violin_plot_custom(target_stats_long, target_stats_plot_1)
+# save_custom_plot(target_plot, file.path(OUTDIR, "target_stats.png"))
+#
+# target_plot <- make_violin_plot_custom(target_stats_long, target_stats_plot_2)
+# save_custom_plot(target_plot, file.path(OUTDIR, "target_stats_informative.png"))
 
 # 3.2 Day/night hypothesis plots by target class - box plots ------------------
 # Each panel row is one target class (road/shrub/open_treed/dense_treed) so

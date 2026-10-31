@@ -61,6 +61,17 @@ load_global_stats <- function(stats_table, areas, stats_filename) {
   # unrenamed.
   # target_stats[c("pnts_height_q01", "pnts_height_q99")] <- target_stats_raw[c("pnts_height_q01", "pnts_height_q99")]
 
+  # Same for n_pnts_clean (points neither duplicated nor below zero height),
+  # needed by `normalize_points_by_area()` for the point density.
+  if (!"n_pnts_clean" %in% names(target_stats_raw)) {
+    stop(
+      "Missing column n_pnts_clean in ", stats_filename, ". Regenerate it ",
+      "with the current lidaynight::globalStats().",
+      call. = FALSE
+    )
+  }
+  target_stats$n_pnts_clean <- target_stats_raw$n_pnts_clean
+
   target_stats$layer <- target_files$site
 
   target_stats_long <- reshape_statistics_long_custom(target_stats)
@@ -111,21 +122,18 @@ add_roi_area_m2 <- function(stats_long, stats_table, areas, stats_filename = "ro
 # Convert the raw "Total number of points" count into a point density
 # (points / m^2) using the `area_m2` column added by `add_roi_area_m2()`,
 # so the global ROI barplot compares acquisitions with differently sized
-# ROIs fairly. Duplicated points and points with negative heights are
-# removed from the count first, using their percentages of the same mission
-# (n * (1 - pct / 100) recovers n - count). Otherwise the density would be
-# inflated by the very artifacts reported in the duplicate and negative-height
-# metrics. A duplicated negative point is subtracted twice, which is negligible
-# given the few negative points per mission. Left untouched (including keeping
-# `area_m2` out of the result) when `area_m2` isn't present, e.g. if
-# statistics other than roi_stats.csv are ever passed in.
+# ROIs fairly. The density uses the clean point count (`clean_statistic`,
+# i.e. without duplicated points and points with negative heights) instead
+# of the raw total. Otherwise it would be inflated by the very artifacts
+# reported in the duplicate and negative-height metrics. The clean count row
+# is dropped afterwards so it isn't plotted as a statistic of its own. Left
+# untouched (including keeping `area_m2` out of the result) when `area_m2`
+# isn't present, e.g. if statistics other than roi_stats.csv are ever passed
+# in.
 normalize_points_by_area <- function(
     stats_long,
     statistic_name = "Total number of points",
-    invalid_pct_stats = c(
-      "Duplicated points (%)",
-      "Points with negative heights (%)"
-    )
+    clean_statistic = "n_pnts_clean"
 ) {
   if (!"area_m2" %in% names(stats_long)) {
     return(stats_long)
@@ -134,25 +142,25 @@ normalize_points_by_area <- function(
   stats_long |>
     dplyr::group_by(layer, time, height) |>
     dplyr::mutate(
-      invalid_pct = {
-        if (!all(invalid_pct_stats %in% statistic)) {
+      n_clean = {
+        if (sum(statistic == clean_statistic) != 1L) {
           stop(
-            "Missing statistic(s) to clean the point density for ",
-            paste(dplyr::cur_group(), collapse = " "), ": ",
-            paste(setdiff(invalid_pct_stats, statistic), collapse = ", "),
+            "Expected one '", clean_statistic, "' value to compute the ",
+            "point density for ", paste(dplyr::cur_group(), collapse = " "),
             call. = FALSE
           )
         }
-        sum(value[statistic %in% invalid_pct_stats])
+        value[statistic == clean_statistic]
       },
       value = dplyr::if_else(
         statistic == statistic_name,
-        value * (1 - invalid_pct / 100) / area_m2,
+        n_clean / area_m2,
         value
       )
     ) |>
     dplyr::ungroup() |>
-    dplyr::select(-area_m2, -invalid_pct)
+    dplyr::filter(statistic != clean_statistic) |>
+    dplyr::select(-area_m2, -n_clean)
 }
 
 load_target_stats_wide <- function(stats_table, areas) {

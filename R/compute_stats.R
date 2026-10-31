@@ -66,6 +66,11 @@ ROOT <- getwd()
 mission_folder <- paste(time, height, sep="_")
 FMPATH <- file.path(point_clouds_dir, mission_folder)
 
+if (!dir.exists(FMPATH)) {
+    stop("Mission folder does not exists: ", FMPATH)
+}
+message("Mission folder: ", FMPATH)
+
 # Area of interest
 aoi_layer <- paste0(area, "_common")
 AOIPATH <- file.path(ROOT, "data/metadata/flights_common_aoi.gpkg")
