@@ -10,9 +10,7 @@ paper/ISPRS_congress/copyright_confirmation.txt
 paper/ISPRS_congress/isprs_fullpaper_highlighted.pdf
 paper/ISPRS_congress/ISPRSabstract_formatted.doc
 paper/ISPRS_congress/poster/poster.svg
-R/*
-!R/*.R
-!R/*.qmd
+R/.quarto
 results/grids/**/*.png
 results/reports/**
 !results/reports/**/
@@ -22,4 +20,3 @@ Rplots.pdf
 .Rhistory
 sync.ffs_db
 Python/upgrade_target_stats.py
-R/compute_inference_internal.R
