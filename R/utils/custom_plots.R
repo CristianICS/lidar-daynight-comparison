@@ -5,8 +5,8 @@ site_labels <- c(
   alfred = "Alfred",
   alfred_loff = "Alfred LOff",
   quinces = "Quinces",
-  encinacorba_hillside = "Encinacorba hillside",
-  encinacorba_scenery = "Encinacorba scenery"
+  encinacorba_hillside = "S1",
+  encinacorba_scenery = "S2"
 )
 
 # Human-readable target class names, keyed by the `class` values used
