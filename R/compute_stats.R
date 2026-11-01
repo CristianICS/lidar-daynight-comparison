@@ -3,10 +3,11 @@ library(lidaynight)
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 5) {
+if (!length(args) %in% c(5, 6)) {
   stop(
-    "Usage: Rscript compute_stats.R <point_clouds_dir> <time> <height> <area> <buffer_m>",
+    "Usage: Rscript compute_stats.R <point_clouds_dir> <time> <height> <area> <buffer_m> [epsg]",
     "\nExample: Rscript <script>.R \"W/pclouds\" day 100 alfred 0.5",
+    "\nExample: Rscript <script>.R \"W/pclouds\" night 100 encinacorba_hillside 0.5 32630",
     call. = FALSE
   )
 }
@@ -20,6 +21,15 @@ area <- args[[4]]
 buffer_m <- as.numeric(args[[5]])
 
 point_clouds_dir <- args[[1]]
+
+# Optional CRS (EPSG code) to compute the stats in. Needed when a mission is
+# stored in a CRS whose map units are not ground meters at the site (e.g.
+# Encinacorba missions stored in UTM 20N instead of UTM 30N)
+epsg <- if (length(args) == 6) as.numeric(args[[6]]) else NULL
+
+if (!is.null(epsg) && is.na(epsg)) {
+  stop("\nInvalid <epsg> parameter '", args[[6]], "'.", call. = FALSE)
+}
 
 time_opts <- c("day", "night")
 if (!time %in% time_opts) {
@@ -91,6 +101,13 @@ grid_params <- readRDS(grid_params_path)
 fmpath_retiled <- retileCatalog(FMPATH, grid_params, n_workers = n_workers)
 
 compressLasFolder(fmpath_retiled)
+
+# Reproject the retiled catalog in place (after retiling, so the stored grid
+# params, defined in the original CRS, still apply)
+# ------------------------------------------------------------------------------
+if (!is.null(epsg)) {
+  reprojectCatalog(fmpath_retiled, epsg, n_workers = n_workers)
+}
 
 # Compute global statistics within the AOI region
 # ------------------------------------------------------------------------------
