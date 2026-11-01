@@ -1,6 +1,7 @@
 data/config_camera_images
 data/metadata/daroca_met_data
-data/metadata/*.csv
+data/metadata/canada_met_data.csv
+data/metadata/spain_met_data.csv
 data/metadata/flights_common_aoi_deprecated.gpkg
 data/sites
 data/shared
