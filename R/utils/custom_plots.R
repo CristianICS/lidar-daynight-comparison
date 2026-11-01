@@ -19,6 +19,12 @@ class_labels <- c(
   shrub = "Shrub"
 )
 
+# Day/night colours shared by every plotting function below: fills for bars,
+# boxes and violins, and lines for outlines. The day line is a darker yellow
+# than the day fill, which is too pale to read as a line on white.
+time_fill_colors <- c(day = "#f9f0a1", night = "#867493")
+time_line_colors <- c(day = "#d9bf2b", night = "#867493")
+
 # Soft grey fill for facet panels without valid data, so the reader can tell
 # "no data" apart from a panel of zeros. Panels are the full grid of the
 # observed `rows` x `cols` combinations; those with no non-NA `value_col` get
@@ -82,12 +88,7 @@ make_target_detection_plot <- function(stats_long) {
       size = 2.3
     ) +
     ggplot2::scale_y_continuous(limits = c(0, 115), breaks = seq(0, 100, 25)) +
-    ggplot2::scale_fill_manual(
-      values = c(
-        day = "#f9f0a1",
-        night = "#867493"
-      )
-    ) +
+    ggplot2::scale_fill_manual(values = time_fill_colors) +
     ggplot2::facet_grid(
       rows = ggplot2::vars(class),
       cols = ggplot2::vars(layer),
@@ -185,12 +186,7 @@ make_dodged_barplot_custom <- function(stats_long, target_statistics = "All", y_
       color = "black",
       linewidth = 0.3
     ) +
-    ggplot2::scale_fill_manual(
-      values = c(
-        day = "#f9f0a1",
-        night = "#867493"
-      )
-    ) +
+    ggplot2::scale_fill_manual(values = time_fill_colors) +
     ggplot2::facet_grid(
       rows = ggplot2::vars(statistic),
       cols = ggplot2::vars(layer),
@@ -263,12 +259,7 @@ make_violin_plot_custom <- function(stats_long, target_statistics = "All") {
       color = "black",
       linewidth = 0.3
     ) +
-    ggplot2::scale_fill_manual(
-      values = c(
-        day = "#f9f0a1",
-        night = "#867493"
-      )
-    ) +
+    ggplot2::scale_fill_manual(values = time_fill_colors) +
     ggplot2::facet_grid(
       rows = ggplot2::vars(statistic),
       cols = ggplot2::vars(layer),
@@ -293,33 +284,76 @@ make_violin_plot_custom <- function(stats_long, target_statistics = "All") {
     )
 }
 
+# Share of targets without ground last returns per buffer radius, laid out
+# like `make_target_detection_plot()` (class x site panels, altitude on x,
+# day/night side by side). A larger buffer contains every smaller one, so the
+# missing share can only drop as the radius grows; each bar therefore stacks
+# the radii, and the top edge of each shade marks the share still missing at
+# that radius (top of the bar = smallest radius in white, largest in black).
+# Day/night is shown only by the bar outline colour. The label gives
+# missing/total targets at the smallest radius.
 make_target_na_by_buffer_plot <- function(na_stats) {
-  stats_plot <- na_stats |>
-    dplyr::mutate(
-      time = factor(time, levels = c("day", "night")),
-      buffer_cm = factor(round(buffer_m * 100))
-    )
+  bar_width <- 0.35
+  time_offsets <- c(day = -0.1875, night = 0.1875)
 
-  ggplot2::ggplot(
+  # Discrete x positions are assigned per site, matching the `free_x` facet
+  # scale, so the stacked rectangles line up with the altitude labels.
+  stats_plot <- na_stats |>
+    dplyr::mutate(buffer_cm = round(buffer_m * 100)) |>
+    dplyr::group_by(layer) |>
+    dplyr::mutate(x_mid = match(height, sort(unique(height)))) |>
+    dplyr::group_by(layer, time, height, class) |>
+    dplyr::arrange(buffer_cm, .by_group = TRUE) |>
+    dplyr::mutate(
+      x_mid = x_mid + unname(time_offsets[time]),
+      ymax = percent_na,
+      ymin = dplyr::lead(percent_na, default = 0)
+    ) |>
+    dplyr::ungroup()
+
+  bars <- stats_plot |>
+    dplyr::group_by(layer, time, height, class) |>
+    dplyr::slice_min(buffer_cm, n = 1) |>
+    dplyr::ungroup()
+
+  stats_plot <- dplyr::mutate(
     stats_plot,
-    ggplot2::aes(x = buffer_cm, y = percent_na, fill = time)
-  ) +
-    no_data_panels(stats_plot, c("layer", "class"), "height", "percent_na") +
-    ggplot2::geom_col(
-      width = 0.7,
-      position = ggplot2::position_dodge(width = 0.75),
-      color = "black",
-      linewidth = 0.3
+    time = factor(time, levels = c("day", "night")),
+    buffer_cm = factor(buffer_cm)
+  )
+
+  ggplot2::ggplot(stats_plot) +
+    no_data_panels(stats_plot, "class", "layer", "percent_na") +
+    ggplot2::geom_blank(ggplot2::aes(x = factor(height))) +
+    ggplot2::geom_rect(
+      ggplot2::aes(
+        xmin = x_mid - bar_width / 2, xmax = x_mid + bar_width / 2,
+        ymin = ymin, ymax = ymax,
+        fill = buffer_cm, color = time
+      ),
+      linewidth = 0.7
     ) +
+    ggplot2::geom_text(
+      data = bars,
+      ggplot2::aes(
+        x = x_mid, y = percent_na,
+        label = paste0(count_na, "/", total_values)
+      ),
+      vjust = -0.4,
+      size = 2.3
+    ) +
+    ggplot2::scale_y_continuous(limits = c(0, 115), breaks = seq(0, 100, 25)) +
+    ggplot2::scale_color_manual(values = time_line_colors) +
     ggplot2::scale_fill_manual(
-      values = c(
-        day = "#f9f0a1",
-        night = "#867493"
-      )
+      values = grDevices::gray.colors(4, start = 1, end = 0, gamma = 1)
+    ) +
+    ggplot2::guides(
+      color = ggplot2::guide_legend(order = 1, override.aes = list(fill = "white")),
+      fill = ggplot2::guide_legend(order = 2, override.aes = list(color = "black"))
     ) +
     ggplot2::facet_grid(
-      rows = ggplot2::vars(layer, class),
-      cols = ggplot2::vars(height),
+      rows = ggplot2::vars(class),
+      cols = ggplot2::vars(layer),
       scales = "free_x",
       space = "free_x",
       labeller = ggplot2::labeller(
@@ -328,15 +362,15 @@ make_target_na_by_buffer_plot <- function(na_stats) {
       )
     ) +
     ggplot2::labs(
-      x = "Buffer radius (cm)",
-      y = "NA values (%)",
-      fill = "Time"
+      x = "Flight altitude (m)",
+      y = "Targets without ground returns (%)",
+      color = "Time",
+      fill = "Buffer radius (cm)"
     ) +
     ggplot2::theme_linedraw(base_size = 12) +
     ggplot2::theme(
       panel.grid.major.x = ggplot2::element_blank(),
-      strip.text.x = ggplot2::element_text(face = "bold"),
-      strip.text.y = ggplot2::element_text(face = "bold", angle = 0, hjust = 0),
+      strip.text = ggplot2::element_text(face = "bold"),
       legend.position = "bottom"
     )
 }
@@ -372,12 +406,7 @@ make_target_boxplot_by_class <- function(stats_long, target_statistic, y_label =
       alpha = 0.5,
       show.legend = FALSE
     ) +
-    ggplot2::scale_fill_manual(
-      values = c(
-        day = "#f9f0a1",
-        night = "#867493"
-      )
-    ) +
+    ggplot2::scale_fill_manual(values = time_fill_colors) +
     ggplot2::facet_grid(
       rows = ggplot2::vars(class),
       cols = ggplot2::vars(layer),

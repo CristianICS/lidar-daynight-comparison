@@ -193,12 +193,14 @@ buffer_na_stats <- target_stats_in_aoi |>
     .groups = "drop"
   )
 
+# Same class x site layout as the ground detection plot above; buffer radii
+# are stacked within each day/night bar (see make_target_na_by_buffer_plot)
 buffer_na_plot <- make_target_na_by_buffer_plot(buffer_na_stats)
 save_custom_plot(
   buffer_na_plot,
   file.path(OUTDIR, "target_na_by_buffer.png"),
-  width = 9,
-  height = 16
+  width = 12,
+  height = 9
 )
 
 
