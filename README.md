@@ -25,11 +25,11 @@ These effects may be especially important for lower-power drone LiDAR systems.
 
 | Hypothesis | Metric used | Why |
 | ---------- | --------| -----------------------------------------------------|
-|Higher backscatter intensity| intensity_avg| direct measurement |
-|Increased point density| n_pnts (points landing inside each target buffer)| direct proxy for density at fixed buffer area |
-|More ground returns under vegetation| n_pnts_last, faceted by class| penetration should differ most in shrub/open_treed/dense_treed vs the road control |
+|Higher backscatter intensity| intensity_avg | direct measurement |
+|Increased point density| (Total number of points − duplicated − negative-height points) / ROI area (mission-level `roi_stats.csv`)| target `n_pnts` is ground-filtered and therefore identical to `n_pnts_last` |
+|More ground returns under vegetation| ground detection (`n_pnts_last > 0`), faceted by class| penetration should differ most in shrub / open_treed / dense_treed vs the road control; ground counts saturate at ~12-13 per buffer, so only detection is informative |
 |Data quality across altitude| rmse_last| x-axis is already flight height, so the altitude trend is visible directly |
-|Higher SNR / less solar noise| n_pnts_last_incoherent| closest available proxy |
+|Higher SNR / less solar noise| prop_last_incoherent (`n_pnts_last_incoherent / n_pnts_last`, NA when `n_pnts_last == 0`)| closest available proxy; the raw count is 0 for undetected targets and grows with density |
 
 ## Scientific background
 
@@ -124,7 +124,7 @@ Notes:
 * Wind speed was approximately 5 m/s.
 * Flights were again flown at 1.9 m/s because the speed could not be changed.
 
-### Encinacorba - burnt hillside
+### Encinacorba burnt hillside (S1)
 
 * Coordinate reference system: `EPSG:32630`
 * Heights: ellipsoidal
@@ -159,7 +159,7 @@ Notes:
 |  100 m | Day   | 2025-09-11 |     15:38 |      17:38 |
 
 
-### Encinacorba - scenery
+### Encinacorba scenery (S2)
 
 * Coordinate reference system: `EPSG:32620`
 * Heights: ellipsoidal
@@ -177,30 +177,6 @@ Notes:
 |  100 m | Day   | 2025-09-11 |     12:08 |      14:08 |
 
 ## Meteorological data
-
-https://sede.aemet.gob.es/
-
-Estación: Daroca
-Indicativo climatológico: 9390
-Período: 10/09/2025 00:00 - 11/09/2025 23:59
-Resolución: horaria/ valores horarios
-Variables: 
-  - "fint": "Fecha hora final del período de observación"
-  - "prec": "Precipitación acumulada, medida por el pluviómetro"
-  - "pacutp": "Precipitación acumulada, medida por el disdrómetro"
-  - "vmax": "Velocidad máxima del viento"
-  - "vv": "Velocidad media del viento"
-  - "dv": "Dirección media del viento"
-  - "dmax": "Dirección del viento máximo"
-  - "hr": "Humedad relativa instantánea del aire"
-  - "pres": "Presión instantánea al nivel en el que se encuentra instalado el barómetro"
-  - "pres_nmar": "Valor de la presión reducido al nivel del mar"
-  - "ts": "Temperatura suelo"
-  - "ta": "Temperatura instantánea del aire"
-  - "tamin": "Temperatura mínima del aire"
-  - "tamax": "Temperatura máxima del aire"
-  - "tpr": "Temperatura del punto de rocío"
-  - "vis": "Visibilidad"
 
 ## GNSS and trajectory processing notes
 
@@ -232,7 +208,7 @@ Logical value, either `TRUE` or `FALSE`.
 
 If set to `TRUE`, the final common AOI is restricted to polygons that intersect ground reference target points. If set to `FALSE`, the final common AOI is created only from the overlap structure of the flight missions.
 
-### Method
+### Methods
 
 The overlap between HESAI flightlines is irregular. To ensure that missions are compared over equivalent areas, an area of interest (AOI) was created for each mission site using only zones with common flightline overlap.
 
@@ -502,9 +478,9 @@ September, 2025
 * Confirm the correct mission times for the Alfred leaf off flights.
 * Add peer-reviewed references on atmospheric effects on LiDAR intensity.
 * Add met station characteristics
-* Run tests to see how many NA data we have with different buffer radius (25, 50, 75 and 100 cm)
-* Do the tests by site, time and flight altitude, for example, one test for Alfred 40m day vs night
-* kruskal wallace - bonneferoni correction (corrects for doing multiple tests)
+* Figure not regenerated: rerun compute_graphics.R
+* encinacorba_scenery: night_75 and night_100 have identical cleaned densities. One of them probably comes from the wrong point cloud.
+* quinces night_75: clean density it's very low (279 pts/m², against 1599 for day_75 and 1207 for night_100). This may be a partial flight or a processing problem worth checking.
 
 ## References
 
