@@ -19,6 +19,31 @@ class_labels <- c(
   shrub = "Shrub"
 )
 
+# Soft grey fill for facet panels without valid data, so the reader can tell
+# "no data" apart from a panel of zeros. Panels are the full grid of the
+# observed `rows` x `cols` combinations; those with no non-NA `value_col` get
+# a borderless rectangle covering the whole panel (and its grid lines).
+# `rows`/`cols` must match the variables passed to `facet_grid()`.
+no_data_panels <- function(stats, rows, cols, value_col = "value", fill = "grey90") {
+  with_data <- stats |>
+    dplyr::filter(!is.na(.data[[value_col]])) |>
+    dplyr::distinct(dplyr::across(dplyr::all_of(c(rows, cols))))
+
+  empty_panels <- dplyr::cross_join(
+    dplyr::distinct(stats, dplyr::across(dplyr::all_of(rows))),
+    dplyr::distinct(stats, dplyr::across(dplyr::all_of(cols)))
+  ) |>
+    dplyr::anti_join(with_data, by = c(rows, cols))
+
+  ggplot2::geom_rect(
+    data = empty_panels,
+    xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf,
+    fill = fill,
+    color = NA,
+    inherit.aes = FALSE
+  )
+}
+
 # Share of targets with at least one ground last return (n_pnts_last > 0)
 # per site, class, altitude and time - the quantity the McNemar detection
 # test in compute_inference.R compares. Ground counts saturate at ~12-13
@@ -41,6 +66,7 @@ make_target_detection_plot <- function(stats_long) {
     stats_plot,
     ggplot2::aes(x = factor(height), y = percent_detected, fill = time)
   ) +
+    no_data_panels(stats_plot, "class", "layer", "percent_detected") +
     ggplot2::geom_col(
       width = 0.7,
       position = ggplot2::position_dodge(width = 0.75),
@@ -85,7 +111,7 @@ make_target_detection_plot <- function(stats_long) {
     )
 }
 
-make_dodged_barplot_custom <- function(stats_long, target_statistics = "All") {
+make_dodged_barplot_custom <- function(stats_long, target_statistics = "All", y_label = "Value") {
 
   # Convert the raw point count into a point density (pnts/m^2), excluding
   # duplicated and negative-height points, when ROI area is available (see
@@ -94,14 +120,14 @@ make_dodged_barplot_custom <- function(stats_long, target_statistics = "All") {
   stats_long <- normalize_points_by_area(stats_long)
 
   statistic_labels <- c(
-    `Total number of points` = "N Pnts. / m2",
-    `Duplicated points (%)` = "Dup. pnts (%)",
-    `Points with negative heights (%)` = "Pnts. -Z (%)",
-    `First returns (%)` = "1st (%)",
-    `Second returns (%)` = "2nd  (%)",
-    `Third returns (%)` = "3th (%)",
-    `Points with only single returns (%)` = "Single (%)",
-    `Points with more than one return (%)` = "> 1 ret. (%)",
+    `Total number of points` = "Point density",
+    `Duplicated points (%)` = "Duplicate points (%)",
+    `Points with negative heights (%)` = "Negative points (%)",
+    `First returns (%)` = "1st",
+    `Second returns (%)` = "2nd",
+    `Third returns (%)` = "3rd",
+    `Points with only single returns (%)` = "Single",
+    `Points with more than one return (%)` = "> 1",
     `Outliers` = "Outliers"
   )
 
@@ -142,7 +168,7 @@ make_dodged_barplot_custom <- function(stats_long, target_statistics = "All") {
   }
 
   stats <- stats_long |>
-    dplyr::filter(statistic %in% target_statistics) |>
+    dplyr::filter(statistic %in% selected_stats) |>
     dplyr::mutate(
       time = factor(time, levels = c("day", "night")),
       statistic = factor(statistic, levels = names(statistic_labels))
@@ -152,6 +178,7 @@ make_dodged_barplot_custom <- function(stats_long, target_statistics = "All") {
     stats,
     ggplot2::aes(x = factor(height), y = value, fill = time)
   ) +
+    no_data_panels(stats, "statistic", "layer") +
     ggplot2::geom_col(
       width = 0.7,
       position = ggplot2::position_dodge(width = 0.75),
@@ -176,7 +203,7 @@ make_dodged_barplot_custom <- function(stats_long, target_statistics = "All") {
     ) +
     ggplot2::labs(
       x = "Flight altitude (m)",
-      y = "Value",
+      y = y_label,
       fill = "Time"
     ) +
     ggplot2::theme_linedraw(base_size = 12) +
@@ -277,6 +304,7 @@ make_target_na_by_buffer_plot <- function(na_stats) {
     stats_plot,
     ggplot2::aes(x = buffer_cm, y = percent_na, fill = time)
   ) +
+    no_data_panels(stats_plot, c("layer", "class"), "height", "percent_na") +
     ggplot2::geom_col(
       width = 0.7,
       position = ggplot2::position_dodge(width = 0.75),
@@ -329,6 +357,7 @@ make_target_boxplot_by_class <- function(stats_long, target_statistic, y_label =
     stats,
     ggplot2::aes(x = factor(height), y = value, fill = time)
   ) +
+    no_data_panels(stats, "class", "layer") +
     ggplot2::geom_boxplot(
       notch = FALSE,
       alpha = 0.75,

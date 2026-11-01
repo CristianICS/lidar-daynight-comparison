@@ -75,12 +75,21 @@ roi_stat_groups <- list(
 )
 
 roi_stat_plot_heights <- c(
-  "global_stats.png" = 11,
+  "global_stats.png" = 7,
   "global_stats_returns.png" = 7
 )
 
+# Y-axis label per plot; plots not listed here keep the function default
+roi_stat_y_labels <- c(
+  "global_stats_returns.png" = "Value (%)"
+)
+
 for (out_file in names(roi_stat_groups)) {
-  global_plot <- make_dodged_barplot_custom(global_stats_long, roi_stat_groups[[out_file]])
+  plot_args <- list(global_stats_long, roi_stat_groups[[out_file]])
+  if (out_file %in% names(roi_stat_y_labels)) {
+    plot_args$y_label <- roi_stat_y_labels[[out_file]]
+  }
+  global_plot <- do.call(make_dodged_barplot_custom, plot_args)
   save_custom_plot(
     global_plot,
     file.path(OUTDIR, out_file),
