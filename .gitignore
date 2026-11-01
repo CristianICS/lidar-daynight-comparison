@@ -1,3 +1,7 @@
+data/config_camera_images
+data/metadata/daroca_met_data
+data/metadata/*.csv
+data/metadata/flights_common_aoi_deprecated.gpkg
 data/sites
 data/shared
 paper/figures
