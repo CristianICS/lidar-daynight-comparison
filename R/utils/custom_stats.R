@@ -97,6 +97,11 @@ compute_roi_areas <- function(stats_table, areas, stats_filename = "roi_stats.cs
       metadata <- lidaynight::parse_folder_metadata(folder_path)
       roi <- sf::st_read(gpkg_path, quiet = TRUE)
 
+      # Geodesic area (lon/lat, s2) instead of the area in the mission CRS:
+      # some Encinacorba missions are stored in EPSG:32620 (UTM 20N) although
+      # the site lies in UTM 30N, so their planar area is inflated by ~1.78x.
+      roi <- sf::st_transform(roi, 4326)
+
       data.frame(
         layer = site_name,
         time = metadata$time,
