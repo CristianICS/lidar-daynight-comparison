@@ -1,0 +1,64 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the paper listed under preferred-citation."
+type: software
+title: "Day-Night LiDAR Flight Comparison"
+abstract: >-
+  Scripts, notes, and workflow documentation for comparing drone-based LiDAR
+  acquisitions collected during daytime and nighttime flights, focusing on
+  signal intensity, point density, return structure, and vertical accuracy
+  against GNSS validation points.
+authors:
+  - family-names: Iranzo
+    given-names: Cristian
+    orcid: "https://orcid.org/0000-0002-3359-6213"
+    affiliation: "Institute of Research into Environmental Sciences of Aragón (IUCA), Universidad de Zaragoza"
+  - family-names: Pontone
+    given-names: Nicholas
+    affiliation: "Department of Geography and Environmental Studies, Carleton University"
+  - family-names: Pérez-Cabello
+    given-names: Fernando
+    affiliation: "Institute of Research into Environmental Sciences of Aragón (IUCA), Universidad de Zaragoza"
+  - family-names: Angás
+    given-names: Jorge
+    affiliation: "Department of Ancient Sciences and Institute of Heritage and Humanities (IPH), ARAID-University of Zaragoza"
+  - family-names: Millard
+    given-names: Koreen
+    affiliation: "Department of Geography and Environmental Studies, Carleton University"
+repository-code: "https://github.com/CristianICS/lidar-daynight-comparison"
+license: GPL-3.0-only
+keywords:
+  - LiDAR
+  - UAV
+  - remote sensing
+  - day-night comparison
+  - point cloud
+preferred-citation:
+  type: conference-paper
+  title: "Should UAV-lidar be collected at night? Impacts of Solar Illumination on Intensity, Penetration, and Ground Surface Detection Over Dense and Wet Vegetation"
+  authors:
+    - family-names: Iranzo
+      given-names: Cristian
+      orcid: "https://orcid.org/0000-0002-3359-6213"
+    - family-names: Pontone
+      given-names: Nicholas
+    - family-names: Pérez-Cabello
+      given-names: Fernando
+    - family-names: Angás
+      given-names: Jorge
+    - family-names: Millard
+      given-names: Koreen
+  collection-title: "The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences"
+  # CFF requires an integer for `volume`, so the ISPRS volume label goes here.
+  volume-title: "XLIX-B3-2026"
+  conference:
+    name: "XXV ISPRS Congress"
+  publisher:
+    name: "Copernicus GmbH"
+  issn: "2194-9034"
+  year: 2026
+  month: 7
+  date-published: 2026-07-30
+  start: 973
+  end: 978
+  doi: "10.5194/isprs-archives-XLIX-B3-2026-973-2026"
+  url: "https://doi.org/10.5194/isprs-archives-XLIX-B3-2026-973-2026"
