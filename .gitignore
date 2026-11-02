@@ -20,8 +20,9 @@ results/grids/**/*.png
 results/reports/**
 !results/reports/**/
 !results/reports/**/*.pdf
+Python/upgrade_target_stats.py
 .Rproj.user
 Rplots.pdf
 .Rhistory
 sync.ffs_db
-Python/upgrade_target_stats.py
+TOWRITE.md
