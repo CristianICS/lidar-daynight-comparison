@@ -275,6 +275,7 @@ family_summary <- dplyr::bind_rows(
     dplyr::summarise(
       n_tested = sum(!is.na(mcnemar_p_value)),
       n_attainable_bonferroni = sum(mcnemar_attainable_bonferroni),
+      n_significant_uncorrected = sum(mcnemar_p_value < 0.05, na.rm = TRUE),
       n_significant_bonferroni = sum(significant_detection_bonferroni),
       n_significant_bh = sum(significant_detection_bh)
     ) |>
@@ -284,6 +285,7 @@ family_summary <- dplyr::bind_rows(
     dplyr::summarise(
       n_tested = sum(!is.na(wilcox_p_value)),
       n_exact = sum(grepl("exact", wilcox_method)),
+      n_significant_uncorrected = sum(wilcox_p_value < 0.05, na.rm = TRUE),
       n_significant_bonferroni = sum(significant_magnitude_bonferroni),
       n_significant_bh = sum(significant_magnitude_bh),
       # Direction from V against its null expectation n(n+1)/4.
@@ -368,9 +370,20 @@ detection_table <- detection_results |>
 family_table <- family_summary |>
   dplyr::transmute(
     Family = family, Tests = n_tested,
+    `Sig. (uncorr.)` = n_significant_uncorrected,
     `Sig. (Bonf.)` = n_significant_bonferroni, `Sig. (BH)` = n_significant_bh,
     `Night > day (BH)` = n_bh_night_higher, `Day > night (BH)` = n_bh_day_higher
   )
+
+# Direction is left NA in the total because detection has none.
+family_table <- dplyr::bind_rows(
+  family_table,
+  family_table |>
+    dplyr::summarise(
+      Family = "Total",
+      dplyr::across(c(Tests, `Sig. (uncorr.)`, `Sig. (Bonf.)`, `Sig. (BH)`), sum)
+    )
+)
 
 # Compact overview: Hodges-Lehmann night-minus-day shift per metric and
 # group, with significance marks.
