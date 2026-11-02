@@ -126,7 +126,7 @@ Notes:
 
 ### Encinacorba burnt hillside (S1)
 
-* Coordinate reference system: `EPSG:32630`
+* Coordinate reference system: `EPSG:32630` (day) and `EPSG:32630` (night)
 * Heights: ellipsoidal
 * Flight speed: 3.1 m/s
 <!-- * Local working data path:
@@ -175,6 +175,8 @@ Notes:
 |   40 m | Day   | 2025-09-11 |     11:56 |      13:56 |
 |   75 m | Day   | 2025-09-11 |     12:18 |      14:18 |
 |  100 m | Day   | 2025-09-11 |     12:08 |      14:08 |
+
+- TODO: The 100 night flight processed files are an exact copy of the night 75.
 
 ## Meteorological data
 
@@ -380,21 +382,12 @@ Per-target RMSE values should not be averaged directly because each target buffe
 
 ## Meteorological data
 
-Meteorological station data should be checked for each flight.
+- Alfred night 100: the temperature (5.335) is exactly the same as the wind speed (5.335). Its absolute humidity and RH (8.048, 64.45) also exactly match Alfred day 100.
 
-Relevant variables include:
+There are additional warnings, but they are related with missions in the same averaging window:
 
-* Air temperature.
-* Relative humidity.
-* Absolute humidity.
-* Water vapour content.
-* Fog, mist, or precipitation.
-* Wind speed.
-* Wind direction.
-
-The meteorological station reports water content in `g/m³`.
-
-TODO: Convert water content from `g/m³` to volumetric units if needed. Confirm the target unit and formula before analysis.
+- Alfred day 40 and day 100: wind, gust and temperature are identical (9.5 m/s, 30 m/s, 19.1 °C). A 30 m/s gust is also very high for a drone flight.
+- Quinces day 75 and day 100: all values are identical.
 
 ## Field notes
 
