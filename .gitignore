@@ -20,6 +20,7 @@ results/grids/**/*.png
 results/reports/**
 !results/reports/**/
 !results/reports/**/*.pdf
+results/**/*.svg
 Python/upgrade_target_stats.py
 .Rproj.user
 Rplots.pdf
